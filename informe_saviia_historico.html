@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico Saviia — Análisis Interactivo | Duppla</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#f0f2f5; color:#333; line-height:1.5; }
+  .container { max-width:1300px; margin:0 auto; padding:20px; }
+
+  .header { background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); color:white; padding:40px; border-radius:16px; margin-bottom:30px; }
+  .header h1 { font-size:28px; margin-bottom:8px; }
+  .header p { opacity:0.85; font-size:14px; margin-top:4px; }
+  .header .badges { margin-top:14px; display:flex; gap:8px; flex-wrap:wrap; }
+  .header .h-badge { background:rgba(255,255,255,0.12); padding:5px 12px; border-radius:20px; font-size:12px; }
+
+  .card { background:white; border-radius:16px; padding:30px; margin-bottom:25px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+  .card h2 { color:#1a1a2e; margin-bottom:15px; border-bottom:2px solid #e0e0e0; padding-bottom:10px; font-size:20px; }
+  .card h3 { color:#1a1a2e; margin:20px 0 12px; font-size:16px; }
+
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-bottom:25px; }
+  .kpi { background:white; padding:20px; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.06); border-left:4px solid #0f3460; }
+  .kpi-label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; }
+  .kpi-value { font-size:24px; font-weight:800; color:#1a1a2e; margin:6px 0 4px; }
+  .kpi-detail { font-size:12px; color:#888; }
+  .kpi.green { border-left-color:#2e7d32; } .kpi.green .kpi-value { color:#2e7d32; }
+  .kpi.blue  { border-left-color:#1565c0; } .kpi.blue  .kpi-value { color:#1565c0; }
+  .kpi.orange{ border-left-color:#f57f17; } .kpi.orange .kpi-value { color:#f57f17; }
+  .kpi.purple{ border-left-color:#6a1b9a; } .kpi.purple .kpi-value { color:#6a1b9a; }
+
+  .chart-wrap { position:relative; height:380px; margin-top:10px; }
+  .chart-wrap.small { height:320px; }
+  .charts-row { display:grid; grid-template-columns:2fr 1fr; gap:20px; }
+
+  .controls { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; align-items:center; }
+  .btn { background:#f0f2f5; border:1px solid #d0d4dc; padding:7px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; color:#333; transition:all 0.15s; }
+  .btn:hover { background:#e3e7ef; }
+  .btn.active { background:#1a1a2e; color:white; border-color:#1a1a2e; }
+  .control-label { font-size:12px; color:#666; font-weight:600; margin-right:6px; }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:10px; }
+  th { background:#1a1a2e; color:white; padding:10px 8px; text-align:left; font-weight:600; cursor:pointer; user-select:none; white-space:nowrap; }
+  th:hover { background:#16213e; }
+  th .sort-arrow { font-size:10px; opacity:0.6; margin-left:4px; }
+  td { padding:8px; border-bottom:1px solid #e8e8e8; }
+  tr:hover { background:#f8f9fa; }
+  .precio-cell { font-weight:700; color:#2e7d32; }
+
+  .badge-sm { display:inline-block; padding:3px 9px; border-radius:10px; font-size:11px; font-weight:600; }
+  .badge-area-637  { background:#fff3e0; color:#e65100; }
+  .badge-area-705  { background:#e8f5e9; color:#2e7d32; }
+  .badge-area-741  { background:#e3f2fd; color:#1565c0; }
+  .badge-area-8535 { background:#f3e5f5; color:#6a1b9a; }
+
+  .delta-pos { color:#2e7d32; font-weight:700; }
+  .delta-neg { color:#c62828; font-weight:700; }
+  .delta-flat { color:#888; }
+
+  .table-scroll { overflow-x:auto; max-height:500px; overflow-y:auto; }
+
+  .metodologia { background:#fff3e0; border-radius:16px; padding:25px; margin-top:30px; font-size:13px; }
+  .metodologia h2 { color:#e65100; margin-bottom:10px; border:none; padding:0; }
+  .metodologia ul { margin-left:20px; }
+
+  @media (max-width:900px) { .charts-row { grid-template-columns:1fr; } }
+  @media print { .container { max-width:100%; } .card { break-inside:avoid; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Saviia &mdash; Histórico de Ventas y Precios</h1>
+    <p>Análisis interactivo del proyecto Saviia (Tecnourbana, Zipaquirá)</p>
+    <p>Fuente: LGI / Galería Inmobiliaria | Tabla: <code>lgi.bogota_def_Def_12-25_trends</code> | <code>codproyecto = 500465</code></p>
+    <div class="badges">
+      <span class="h-badge">Constructora: Tecnourbana</span>
+      <span class="h-badge">Sector: Zipaquirá &mdash; Sabana Norte</span>
+      <span class="h-badge">Estrato 4</span>
+      <span class="h-badge">Tipo: No VIS</span>
+      <span class="h-badge" id="hb-period"></span>
+      <span class="h-badge" id="hb-rows"></span>
+    </div>
+  </div>
+
+  <div class="kpi-grid" id="kpis"></div>
+
+  <div class="card">
+    <h2>Evolución del Precio m² Mensual</h2>
+    <div class="controls">
+      <span class="control-label">Mostrar:</span>
+      <button class="btn active" data-series="ponderado">Promedio ponderado</button>
+      <button class="btn" data-series="tipologias">Por tipología</button>
+      <button class="btn" data-series="ambos">Ambos</button>
+    </div>
+    <div class="chart-wrap"><canvas id="chartPrecio"></canvas></div>
+  </div>
+
+  <div class="charts-row">
+    <div class="card">
+      <h2>Unidades Vendidas por Mes</h2>
+      <div class="controls">
+        <span class="control-label">Vista:</span>
+        <button class="btn active" data-vmode="total">Total mensual</button>
+        <button class="btn" data-vmode="stack">Apilado por tipología</button>
+      </div>
+      <div class="chart-wrap small"><canvas id="chartVentas"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Distribución por Tipología</h2>
+      <div class="chart-wrap small"><canvas id="chartTipo"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Resumen Anual</h2>
+    <div class="table-scroll">
+      <table id="tablaAnual">
+        <thead><tr>
+          <th>Año</th><th>Unidades vendidas</th><th>Precio m² promedio ponderado</th><th>Precio mín</th><th>Precio máx</th><th>Variación YoY</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Detalle Mensual por Tipología</h2>
+    <div class="controls">
+      <span class="control-label">Filtrar tipología:</span>
+      <button class="btn active" data-filter="all">Todas</button>
+      <button class="btn" data-filter="63.7">63.7 m²</button>
+      <button class="btn" data-filter="70.5">70.5 m²</button>
+      <button class="btn" data-filter="74.1">74.1 m²</button>
+      <button class="btn" data-filter="85.35">85.35 m²</button>
+      <span class="control-label" style="margin-left:15px">Orden:</span>
+      <button class="btn active" data-order="desc">Más reciente</button>
+      <button class="btn" data-order="asc">Más antiguo</button>
+    </div>
+    <div class="table-scroll">
+      <table id="tablaDetalle">
+        <thead><tr>
+          <th>Mes</th><th>Tipología</th><th>Precio m²</th><th>Unidades</th><th>Ingreso estimado</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="metodologia">
+    <h2>Metodología y notas</h2>
+    <ul>
+      <li><strong>Fuente:</strong> tabla <code>complete-verve-362421.lgi.bogota_def_Def_12-25_trends</code> (BigQuery, datos LGI / Galería Inmobiliaria, corte diciembre 2025).</li>
+      <li><strong>Granularidad:</strong> una fila por mes × tipología (área en m²).</li>
+      <li><strong>Promedio ponderado:</strong> Σ(precio_m² × unidades) / Σ(unidades) — refleja el precio efectivo al que se vendió la mayoría.</li>
+      <li><strong>Variación YoY:</strong> comparación del precio promedio ponderado contra el mismo año anterior.</li>
+      <li><strong>Ingreso estimado:</strong> precio_m² × área × unidades (ingreso bruto ese mes para esa tipología).</li>
+      <li><strong>Tipologías comerciales:</strong> 63.7 m², 70.5 m², 74.1 m², 85.35 m².</li>
+    </ul>
+  </div>
+
+</div>
+
+<script>
+// ============== DATOS EMBEBIDOS ==============
+const RAW = [{"area":"70.5","mes":"2021-11-01","precio_m2":"3829787.0","unidades":"3"},{"area":"85.35","mes":"2021-11-01","precio_m2":"3831283.0","unidades":"2"},{"area":"70.5","mes":"2021-12-01","precio_m2":"3829787.0","unidades":"6"},{"area":"85.35","mes":"2021-12-01","precio_m2":"3831283.0","unidades":"2"},{"area":"70.5","mes":"2022-01-01","precio_m2":"3829787.0","unidades":"5"},{"area":"85.35","mes":"2022-01-01","precio_m2":"3831283.0","unidades":"4"},{"area":"70.5","mes":"2022-02-01","precio_m2":"3795745.0","unidades":"7"},{"area":"85.35","mes":"2022-02-01","precio_m2":"3659051.0","unidades":"3"},{"area":"70.5","mes":"2022-03-01","precio_m2":"3795745.0","unidades":"2"},{"area":"85.35","mes":"2022-03-01","precio_m2":"3659051.0","unidades":"6"},{"area":"70.5","mes":"2022-04-01","precio_m2":"3863830.0","unidades":"5"},{"area":"85.35","mes":"2022-04-01","precio_m2":"3682484.0","unidades":"3"},{"area":"70.5","mes":"2022-05-01","precio_m2":"3916555.0","unidades":"9"},{"area":"85.35","mes":"2022-05-01","precio_m2":"3702402.0","unidades":"6"},{"area":"63.7","mes":"2022-06-01","precio_m2":"3877551.0","unidades":"2"},{"area":"70.5","mes":"2022-06-01","precio_m2":"4113475.0","unidades":"1"},{"area":"74.1","mes":"2022-06-01","precio_m2":"4063428.0","unidades":"1"},{"area":"63.7","mes":"2022-07-01","precio_m2":"3877551.0","unidades":"16"},{"area":"70.5","mes":"2022-07-01","precio_m2":"4113475.0","unidades":"1"},{"area":"74.1","mes":"2022-07-01","precio_m2":"4063428.0","unidades":"9"},{"area":"85.35","mes":"2022-07-01","precio_m2":"3886350.0","unidades":"2"},{"area":"63.7","mes":"2022-08-01","precio_m2":"3910862.0","unidades":"4"},{"area":"74.1","mes":"2022-08-01","precio_m2":"3987219.0","unidades":"3"},{"area":"85.35","mes":"2022-08-01","precio_m2":"3918098.0","unidades":"2"},{"area":"70.5","mes":"2022-09-01","precio_m2":"4130927.0","unidades":"1"},{"area":"63.7","mes":"2022-10-01","precio_m2":"4048666.0","unidades":"2"},{"area":"74.1","mes":"2022-10-01","precio_m2":"4122807.0","unidades":"2"},{"area":"85.35","mes":"2022-10-01","precio_m2":"4023433.0","unidades":"1"},{"area":"63.7","mes":"2022-11-01","precio_m2":"4048666.0","unidades":"6"},{"area":"74.1","mes":"2022-11-01","precio_m2":"4122807.0","unidades":"2"},{"area":"85.35","mes":"2022-11-01","precio_m2":"4023433.0","unidades":"2"},{"area":"63.7","mes":"2022-12-01","precio_m2":"4073987.0","unidades":"6"},{"area":"74.1","mes":"2022-12-01","precio_m2":"4134238.0","unidades":"3"},{"area":"63.7","mes":"2023-01-01","precio_m2":"4268901.0","unidades":"3"},{"area":"70.5","mes":"2023-01-01","precio_m2":"4279433.0","unidades":"1"},{"area":"74.1","mes":"2023-01-01","precio_m2":"4185722.0","unidades":"3"},{"area":"63.7","mes":"2023-02-01","precio_m2":"4268901.0","unidades":"2"},{"area":"85.35","mes":"2023-03-01","precio_m2":"4043597.0","unidades":"1"},{"area":"63.7","mes":"2023-05-01","precio_m2":"4546892.0","unidades":"3"},{"area":"70.5","mes":"2023-05-01","precio_m2":"4609858.0","unidades":"2"},{"area":"74.1","mes":"2023-05-01","precio_m2":"4407611.0","unidades":"2"},{"area":"63.7","mes":"2023-06-01","precio_m2":"4546892.0","unidades":"1"},{"area":"70.5","mes":"2023-06-01","precio_m2":"4609858.0","unidades":"1"},{"area":"74.1","mes":"2023-06-01","precio_m2":"4407611.0","unidades":"1"},{"area":"63.7","mes":"2023-07-01","precio_m2":"4546892.0","unidades":"3"},{"area":"70.5","mes":"2023-07-01","precio_m2":"4609858.0","unidades":"1"},{"area":"85.35","mes":"2023-07-01","precio_m2":"4334247.0","unidades":"1"},{"area":"63.7","mes":"2023-09-01","precio_m2":"4546892.0","unidades":"1"},{"area":"70.5","mes":"2023-09-01","precio_m2":"4609858.0","unidades":"1"},{"area":"63.7","mes":"2023-10-01","precio_m2":"4546892.0","unidades":"1"},{"area":"70.5","mes":"2023-10-01","precio_m2":"4609858.0","unidades":"3"},{"area":"85.35","mes":"2023-10-01","precio_m2":"4334247.0","unidades":"1"},{"area":"70.5","mes":"2023-11-01","precio_m2":"4609858.0","unidades":"2"},{"area":"74.1","mes":"2023-11-01","precio_m2":"4407611.0","unidades":"1"},{"area":"85.35","mes":"2023-11-01","precio_m2":"4334247.0","unidades":"2"},{"area":"70.5","mes":"2023-12-01","precio_m2":"4697858.0","unidades":"1"},{"area":"74.1","mes":"2023-12-01","precio_m2":"4555830.0","unidades":"1"},{"area":"70.5","mes":"2024-01-01","precio_m2":"4697858.0","unidades":"1"},{"area":"85.35","mes":"2024-01-01","precio_m2":"4423035.0","unidades":"1"},{"area":"63.7","mes":"2024-02-01","precio_m2":"4740973.0","unidades":"1"},{"area":"85.35","mes":"2024-03-01","precio_m2":"5165788.0","unidades":"2"},{"area":"63.7","mes":"2024-04-01","precio_m2":"4708179.0","unidades":"2"},{"area":"70.5","mes":"2024-04-01","precio_m2":"5253901.0","unidades":"2"},{"area":"85.35","mes":"2024-04-01","precio_m2":"5165788.0","unidades":"1"},{"area":"85.35","mes":"2024-05-01","precio_m2":"5228049.0","unidades":"3"},{"area":"70.5","mes":"2024-06-01","precio_m2":"5287603.0","unidades":"5"},{"area":"85.35","mes":"2024-06-01","precio_m2":"5228049.0","unidades":"2"},{"area":"63.7","mes":"2024-08-01","precio_m2":"4708179.0","unidades":"2"},{"area":"70.5","mes":"2024-08-01","precio_m2":"5287603.0","unidades":"1"},{"area":"74.1","mes":"2024-08-01","precio_m2":"4693468.0","unidades":"3"},{"area":"85.35","mes":"2024-08-01","precio_m2":"5228049.0","unidades":"1"},{"area":"74.1","mes":"2024-09-01","precio_m2":"4717382.0","unidades":"1"},{"area":"70.5","mes":"2024-10-01","precio_m2":"5315972.0","unidades":"5"},{"area":"74.1","mes":"2024-10-01","precio_m2":"4717382.0","unidades":"2"},{"area":"85.35","mes":"2024-10-01","precio_m2":"5239766.0","unidades":"5"},{"area":"70.5","mes":"2024-11-01","precio_m2":"5315972.0","unidades":"3"},{"area":"85.35","mes":"2024-11-01","precio_m2":"5267065.0","unidades":"2"},{"area":"63.7","mes":"2024-12-01","precio_m2":"4668069.0","unidades":"1"},{"area":"70.5","mes":"2024-12-01","precio_m2":"5315972.0","unidades":"5"},{"area":"85.35","mes":"2024-12-01","precio_m2":"5267065.0","unidades":"4"},{"area":"63.7","mes":"2025-01-01","precio_m2":"4700440.0","unidades":"1"},{"area":"70.5","mes":"2025-01-01","precio_m2":"5366383.0","unidades":"2"},{"area":"74.1","mes":"2025-01-01","precio_m2":"5087193.0","unidades":"2"},{"area":"85.35","mes":"2025-01-01","precio_m2":"5310346.0","unidades":"2"},{"area":"70.5","mes":"2025-02-01","precio_m2":"5457404.0","unidades":"6"},{"area":"74.1","mes":"2025-02-01","precio_m2":"5087193.0","unidades":"1"},{"area":"85.35","mes":"2025-02-01","precio_m2":"5360633.0","unidades":"2"},{"area":"70.5","mes":"2025-03-01","precio_m2":"5457404.0","unidades":"1"},{"area":"74.1","mes":"2025-03-01","precio_m2":"5087193.0","unidades":"2"},{"area":"85.35","mes":"2025-03-01","precio_m2":"5360633.0","unidades":"1"},{"area":"85.35","mes":"2025-04-01","precio_m2":"5360633.0","unidades":"1"},{"area":"63.7","mes":"2025-05-01","precio_m2":"4976452.0","unidades":"2"},{"area":"70.5","mes":"2025-05-01","precio_m2":"5386355.0","unidades":"7"},{"area":"70.5","mes":"2025-06-01","precio_m2":"5386355.0","unidades":"4"},{"area":"85.35","mes":"2025-06-01","precio_m2":"5307159.0","unidades":"3"},{"area":"63.7","mes":"2025-07-01","precio_m2":"4976452.0","unidades":"4"},{"area":"70.5","mes":"2025-07-01","precio_m2":"5386355.0","unidades":"1"},{"area":"74.1","mes":"2025-07-01","precio_m2":"5937922.0","unidades":"6"},{"area":"63.7","mes":"2025-08-01","precio_m2":"5910518.0","unidades":"3"},{"area":"70.5","mes":"2025-08-01","precio_m2":"5386355.0","unidades":"1"},{"area":"85.35","mes":"2025-08-01","precio_m2":"5307159.0","unidades":"2"},{"area":"63.7","mes":"2025-09-01","precio_m2":"5910518.0","unidades":"2"},{"area":"70.5","mes":"2025-09-01","precio_m2":"5386355.0","unidades":"1"},{"area":"74.1","mes":"2025-09-01","precio_m2":"6000000.0","unidades":"2"},{"area":"85.35","mes":"2025-09-01","precio_m2":"5307159.0","unidades":"4"},{"area":"70.5","mes":"2025-10-01","precio_m2":"5386355.0","unidades":"5"},{"area":"74.1","mes":"2025-10-01","precio_m2":"6000000.0","unidades":"2"},{"area":"63.7","mes":"2025-11-01","precio_m2":"5910518.0","unidades":"1"},{"area":"74.1","mes":"2025-11-01","precio_m2":"6000000.0","unidades":"1"},{"area":"63.7","mes":"2025-12-01","precio_m2":"5910518.0","unidades":"3"},{"area":"74.1","mes":"2025-12-01","precio_m2":"6000000.0","unidades":"4"}];
+
+// Normalizar
+const DATA = RAW.map(r => ({ area:parseFloat(r.area), mes:r.mes, precio:parseFloat(r.precio_m2), unidades:parseInt(r.unidades) }));
+const TIPOLOGIAS = [...new Set(DATA.map(d=>d.area))].sort((a,b)=>a-b);
+const MESES = [...new Set(DATA.map(d=>d.mes))].sort();
+
+const COLORS = { 63.7:'#f57f17', 70.5:'#2e7d32', 74.1:'#1565c0', 85.35:'#6a1b9a' };
+const COLORS_LIGHT = { 63.7:'#fff3e0', 70.5:'#e8f5e9', 74.1:'#e3f2fd', 85.35:'#f3e5f5' };
+const fmt = n => '$' + Math.round(n).toLocaleString('es-CO');
+const fmtMes = m => { const [y,mm] = m.split('-'); const nombres=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']; return nombres[parseInt(mm)-1]+' '+y; };
+const areaClass = a => 'badge-area-' + String(a).replace('.','');
+
+// ============== AGREGADOS ==============
+function ponderadoMensual() {
+  return MESES.map(m => {
+    const filas = DATA.filter(d=>d.mes===m);
+    const totalU = filas.reduce((s,r)=>s+r.unidades,0);
+    const wavg = filas.reduce((s,r)=>s+r.precio*r.unidades,0) / totalU;
+    return { mes:m, precio:wavg, unidades:totalU };
+  });
+}
+function precioPorTipologia(tipo) {
+  return MESES.map(m => {
+    const f = DATA.find(d=>d.mes===m && d.area===tipo);
+    return f ? f.precio : null;
+  });
+}
+function ventasPorTipologia(tipo) {
+  return MESES.map(m => {
+    const f = DATA.find(d=>d.mes===m && d.area===tipo);
+    return f ? f.unidades : 0;
+  });
+}
+function totalUnidadesPorTipo() {
+  return TIPOLOGIAS.map(t => DATA.filter(d=>d.area===t).reduce((s,r)=>s+r.unidades,0));
+}
+function resumenAnual() {
+  const anios = [...new Set(MESES.map(m=>m.split('-')[0]))].sort();
+  const out = [];
+  let prevPrecio = null;
+  for (const a of anios) {
+    const filas = DATA.filter(d=>d.mes.startsWith(a));
+    const totalU = filas.reduce((s,r)=>s+r.unidades,0);
+    const wavg = filas.reduce((s,r)=>s+r.precio*r.unidades,0) / totalU;
+    const min = Math.min(...filas.map(r=>r.precio));
+    const max = Math.max(...filas.map(r=>r.precio));
+    const yoy = prevPrecio ? ((wavg - prevPrecio)/prevPrecio*100) : null;
+    out.push({ anio:a, unidades:totalU, precio:wavg, min, max, yoy });
+    prevPrecio = wavg;
+  }
+  return out;
+}
+
+// ============== KPIs ==============
+function renderKPIs() {
+  const pond = ponderadoMensual();
+  const ult = pond[pond.length-1];
+  const prim = pond[0];
+  const totalUnidades = DATA.reduce((s,r)=>s+r.unidades,0);
+  const crecimiento = ((ult.precio - prim.precio)/prim.precio*100);
+  const meses = pond.length;
+  const aniosTrans = (new Date(ult.mes) - new Date(prim.mes))/(365.25*24*3600*1000);
+  const cagr = (Math.pow(ult.precio/prim.precio, 1/aniosTrans) - 1) * 100;
+  const promMensual = totalUnidades / meses;
+
+  // tipo más vendida
+  const totales = totalUnidadesPorTipo();
+  const idxTop = totales.indexOf(Math.max(...totales));
+  const tipoTop = TIPOLOGIAS[idxTop];
+
+  document.getElementById('hb-period').textContent = `Período: ${fmtMes(prim.mes)} → ${fmtMes(ult.mes)}`;
+  document.getElementById('hb-rows').textContent = `${MESES.length} meses · ${DATA.length} registros`;
+
+  const html = `
+    <div class="kpi green">
+      <div class="kpi-label">Precio m² actual</div>
+      <div class="kpi-value">${fmt(ult.precio)}</div>
+      <div class="kpi-detail">Promedio ponderado · ${fmtMes(ult.mes)}</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">Crecimiento total</div>
+      <div class="kpi-value">+${crecimiento.toFixed(1)}%</div>
+      <div class="kpi-detail">Desde ${fmtMes(prim.mes)} (${fmt(prim.precio)})</div>
+    </div>
+    <div class="kpi orange">
+      <div class="kpi-label">CAGR (anual compuesto)</div>
+      <div class="kpi-value">+${cagr.toFixed(1)}%</div>
+      <div class="kpi-detail">${aniosTrans.toFixed(1)} años de historia</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Unidades vendidas (total)</div>
+      <div class="kpi-value">${totalUnidades}</div>
+      <div class="kpi-detail">~${promMensual.toFixed(1)} unidades/mes promedio</div>
+    </div>
+    <div class="kpi purple">
+      <div class="kpi-label">Tipología más vendida</div>
+      <div class="kpi-value">${tipoTop} m²</div>
+      <div class="kpi-detail">${totales[idxTop]} unidades (${(totales[idxTop]/totalUnidades*100).toFixed(0)}%)</div>
+    </div>
+  `;
+  document.getElementById('kpis').innerHTML = html;
+}
+
+// ============== CHART PRECIO ==============
+let chartPrecio;
+function renderChartPrecio(modo='ponderado') {
+  const labels = MESES.map(fmtMes);
+  const datasets = [];
+  const pond = ponderadoMensual().map(p=>p.precio);
+
+  if (modo==='ponderado' || modo==='ambos') {
+    datasets.push({
+      label:'Promedio ponderado',
+      data:pond,
+      borderColor:'#1a1a2e',
+      backgroundColor:'rgba(26,26,46,0.08)',
+      borderWidth:3, fill:modo==='ponderado', tension:0.3, pointRadius:3
+    });
+  }
+  if (modo==='tipologias' || modo==='ambos') {
+    for (const t of TIPOLOGIAS) {
+      datasets.push({
+        label:`${t} m²`,
+        data:precioPorTipologia(t),
+        borderColor:COLORS[t],
+        backgroundColor:COLORS[t]+'20',
+        borderWidth:2, fill:false, tension:0.3, pointRadius:2,
+        spanGaps:true
+      });
+    }
+  }
+  if (chartPrecio) chartPrecio.destroy();
+  chartPrecio = new Chart(document.getElementById('chartPrecio'), {
+    type:'line',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ position:'bottom' },
+        tooltip:{ callbacks:{ label:c => `${c.dataset.label}: ${fmt(c.parsed.y)}` } }
+      },
+      scales:{
+        y:{ ticks:{ callback:v=>fmt(v) }, title:{display:true,text:'Precio m²'} },
+        x:{ ticks:{ maxRotation:45, autoSkip:true, maxTicksLimit:24 } }
+      }
+    }
+  });
+}
+
+// ============== CHART VENTAS ==============
+let chartVentas;
+function renderChartVentas(modo='total') {
+  const labels = MESES.map(fmtMes);
+  let datasets;
+  if (modo==='total') {
+    const totales = ponderadoMensual().map(p=>p.unidades);
+    datasets = [{ label:'Unidades vendidas', data:totales, backgroundColor:'#0f3460' }];
+  } else {
+    datasets = TIPOLOGIAS.map(t => ({
+      label:`${t} m²`,
+      data: ventasPorTipologia(t),
+      backgroundColor: COLORS[t]
+    }));
+  }
+  if (chartVentas) chartVentas.destroy();
+  chartVentas = new Chart(document.getElementById('chartVentas'), {
+    type:'bar',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom' } },
+      scales:{
+        x:{ stacked:modo==='stack', ticks:{ maxRotation:45, autoSkip:true, maxTicksLimit:18 } },
+        y:{ stacked:modo==='stack', title:{display:true,text:'Unidades'} }
+      }
+    }
+  });
+}
+
+// ============== CHART TIPO ==============
+let chartTipo;
+function renderChartTipo() {
+  const totales = totalUnidadesPorTipo();
+  chartTipo = new Chart(document.getElementById('chartTipo'), {
+    type:'doughnut',
+    data:{
+      labels: TIPOLOGIAS.map(t=>`${t} m²`),
+      datasets:[{ data:totales, backgroundColor:TIPOLOGIAS.map(t=>COLORS[t]), borderWidth:2, borderColor:'#fff' }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom' },
+        tooltip:{ callbacks:{ label:c => {
+          const total = c.dataset.data.reduce((s,v)=>s+v,0);
+          return `${c.label}: ${c.parsed} unidades (${(c.parsed/total*100).toFixed(1)}%)`;
+        }}}
+      }
+    }
+  });
+}
+
+// ============== TABLA ANUAL ==============
+function renderTablaAnual() {
+  const data = resumenAnual();
+  const tbody = document.querySelector('#tablaAnual tbody');
+  tbody.innerHTML = data.map(r => {
+    let yoyHtml = '<span class="delta-flat">—</span>';
+    if (r.yoy !== null) {
+      const cls = r.yoy > 0 ? 'delta-pos' : r.yoy < 0 ? 'delta-neg' : 'delta-flat';
+      const sign = r.yoy > 0 ? '+' : '';
+      yoyHtml = `<span class="${cls}">${sign}${r.yoy.toFixed(1)}%</span>`;
+    }
+    return `<tr>
+      <td><strong>${r.anio}</strong></td>
+      <td>${r.unidades}</td>
+      <td class="precio-cell">${fmt(r.precio)}</td>
+      <td>${fmt(r.min)}</td>
+      <td>${fmt(r.max)}</td>
+      <td>${yoyHtml}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============== TABLA DETALLE ==============
+let detalleFilter='all', detalleOrder='desc';
+function renderTablaDetalle() {
+  let rows = [...DATA];
+  if (detalleFilter !== 'all') rows = rows.filter(r => r.area === parseFloat(detalleFilter));
+  rows.sort((a,b) => detalleOrder==='desc' ? b.mes.localeCompare(a.mes) : a.mes.localeCompare(b.mes));
+  const tbody = document.querySelector('#tablaDetalle tbody');
+  tbody.innerHTML = rows.map(r => {
+    const ingreso = r.precio * r.area * r.unidades;
+    return `<tr>
+      <td>${fmtMes(r.mes)}</td>
+      <td><span class="badge-sm ${areaClass(r.area)}">${r.area} m²</span></td>
+      <td class="precio-cell">${fmt(r.precio)}</td>
+      <td>${r.unidades}</td>
+      <td>${fmt(ingreso)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ============== EVENT BINDINGS ==============
+document.querySelectorAll('[data-series]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('[data-series]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderChartPrecio(btn.dataset.series);
+  });
+});
+document.querySelectorAll('[data-vmode]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('[data-vmode]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderChartVentas(btn.dataset.vmode);
+  });
+});
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    detalleFilter = btn.dataset.filter;
+    renderTablaDetalle();
+  });
+});
+document.querySelectorAll('[data-order]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    document.querySelectorAll('[data-order]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    detalleOrder = btn.dataset.order;
+    renderTablaDetalle();
+  });
+});
+
+// ============== INIT ==============
+renderKPIs();
+renderChartPrecio('ponderado');
+renderChartVentas('total');
+renderChartTipo();
+renderTablaAnual();
+renderTablaDetalle();
+</script>
+
+</body>
+</html>

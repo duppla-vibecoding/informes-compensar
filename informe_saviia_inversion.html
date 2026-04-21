@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saviia · Análisis Inversión | Duppla</title>
+<style>
+  :root {
+    --navy:#1e3a5f; --slate:#475569; --bg:#f1f5f9; --surface:#fff;
+    --border:#e2e8f0; --text:#0f172a; --muted:#64748b;
+    --accent:#0891b2; --warn:#b45309; --vis:#3b82f6; --novis:#8b5cf6; --saviia:#ea580c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  .container{max-width:1200px;margin:0 auto;padding:24px}
+  .header{background:linear-gradient(135deg,var(--navy),#2c4a73);color:white;border-radius:12px;padding:28px 32px;margin-bottom:20px}
+  .header h1{font-size:26px;font-weight:700;margin-bottom:6px}
+  .header .sub{font-size:13px;opacity:0.85}
+  .section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:18px}
+  .section h2{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px}
+  .section .h-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .section h3{font-size:13px;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:0.4px;margin:20px 0 10px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .kpi{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:18px 20px;border-left:4px solid var(--navy)}
+  .kpi.accent{border-left-color:var(--accent)}
+  .kpi.warn{border-left-color:var(--warn)}
+  .kpi.saviia{border-left-color:var(--saviia)}
+  .kpi.vis{border-left-color:var(--vis)}
+  .kpi.novis{border-left-color:var(--novis)}
+  .kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
+  .kpi-value{font-size:30px;font-weight:700;color:var(--text);margin-top:4px;line-height:1.1;font-variant-numeric:tabular-nums}
+  .kpi-detail{font-size:12px;color:var(--muted);margin-top:5px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th{background:#f1f5f9;color:var(--slate);padding:10px;text-align:left;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;border-bottom:2px solid var(--border)}
+  td{padding:8px 10px;border-bottom:1px solid var(--border)}
+  tr.total td,tr.year-summary td{background:#f1f5f9!important;border-top:2px solid var(--navy);font-weight:700}
+  tr.year-row td{background:#fafbfc;font-weight:600}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .col-saviia{background:#fff7ed!important}
+  .col-vis{background:#eff6ff!important}
+  .col-novis{background:#f5f3ff!important}
+  .delta-pos{color:#059669;font-weight:600}
+  .delta-neg{color:#dc2626;font-weight:600}
+  .scroll{max-height:500px;overflow-y:auto;border:1px solid var(--border);border-radius:8px}
+  .scroll table{margin-top:0}
+  .scroll thead th{position:sticky;top:0;z-index:1}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>Saviia &mdash; Análisis Inversión Estratégica</h1>
+    <div class="sub">Tecnourbana · Zipaquirá Sabana Norte · Estrato 4 · No-VIS · 120 apartamentos ofrecidos</div>
+  </div>
+
+  <!-- 1. TAMAÑO -->
+  <div class="section">
+    <h2>1 · Tamaño del conjunto</h2>
+    <div class="h-sub">Número total de apartamentos del proyecto Saviia.</div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total apartamentos</div><div class="kpi-value">418</div><div class="kpi-detail">en 4 tipologías</div></div>
+      <div class="kpi"><div class="kpi-label">Vendidos</div><div class="kpi-value">275</div><div class="kpi-detail">65.8% colocado</div></div>
+      <div class="kpi accent"><div class="kpi-label">Disponibles</div><div class="kpi-value">143</div><div class="kpi-detail">en inventario</div></div>
+    </div>
+  </div>
+
+  <!-- 2. % DE VENTA -->
+  <div class="section">
+    <h2>2 · Porcentaje de venta a Duppla</h2>
+    <div class="h-sub">Nos están ofreciendo 120 apartamentos del total del proyecto.</div>
+    <div class="kpi-grid">
+      <div class="kpi saviia"><div class="kpi-label">Apartamentos ofrecidos</div><div class="kpi-value">120</div><div class="kpi-detail">a Duppla</div></div>
+      <div class="kpi accent"><div class="kpi-label">% del proyecto total</div><div class="kpi-value">28.7%</div><div class="kpi-detail">120 / 418</div></div>
+      <div class="kpi warn"><div class="kpi-label">% del inventario disponible</div><div class="kpi-value">83.9%</div><div class="kpi-detail">120 / 143</div></div>
+    </div>
+  </div>
+
+  <!-- 3. HISTÓRICO ZONA DESAGREGADO -->
+  <div class="section">
+    <h2>3 · Histórico precio en radio 2 km · 5 años · desagregado</h2>
+    <div class="h-sub">Precio promedio mensual ponderado por segmento. Saviia (nuestro proyecto) vs No-VIS zona (11 proyectos) vs VIS zona (9 proyectos).</div>
+
+    <h3>Resumen anual</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Año</th>
+          <th class="num col-saviia">Saviia $/m²</th><th class="num col-saviia">var %</th>
+          <th class="num col-novis">No-VIS zona $/m²</th><th class="num col-novis">var %</th>
+          <th class="num col-vis">VIS zona $/m²</th><th class="num col-vis">var %</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr><td><strong>2021</strong></td><td class="num col-saviia">$3,830,247</td><td class="num col-saviia">—</td><td class="num col-novis">$3,276,994</td><td class="num col-novis">—</td><td class="num col-vis">$3,088,323</td><td class="num col-vis">—</td></tr>
+<tr><td><strong>2022</strong></td><td class="num col-saviia">$3,906,869</td><td class="num col-saviia"><span class="delta-pos">+2.0%</span></td><td class="num col-novis">$3,718,217</td><td class="num col-novis"><span class="delta-pos">+13.5%</span></td><td class="num col-vis">$3,202,910</td><td class="num col-vis"><span class="delta-pos">+3.7%</span></td></tr>
+<tr><td><strong>2023</strong></td><td class="num col-saviia">$4,447,857</td><td class="num col-saviia"><span class="delta-pos">+13.8%</span></td><td class="num col-novis">$4,228,492</td><td class="num col-novis"><span class="delta-pos">+13.7%</span></td><td class="num col-vis">$3,672,786</td><td class="num col-vis"><span class="delta-pos">+14.7%</span></td></tr>
+<tr><td><strong>2024</strong></td><td class="num col-saviia">$5,120,057</td><td class="num col-saviia"><span class="delta-pos">+15.1%</span></td><td class="num col-novis">$4,539,611</td><td class="num col-novis"><span class="delta-pos">+7.4%</span></td><td class="num col-vis">$4,107,800</td><td class="num col-vis"><span class="delta-pos">+11.8%</span></td></tr>
+<tr><td><strong>2025</strong></td><td class="num col-saviia">$5,492,662</td><td class="num col-saviia"><span class="delta-pos">+7.3%</span></td><td class="num col-novis">$4,824,101</td><td class="num col-novis"><span class="delta-pos">+6.3%</span></td><td class="num col-vis">$4,304,777</td><td class="num col-vis"><span class="delta-pos">+4.8%</span></td></tr>
+<tr class="year-summary"><td>Crecimiento 2021→2025</td><td class="num col-saviia">$1,662,415</td><td class="num col-saviia">+43.4%</td><td class="num col-novis">$1,547,107</td><td class="num col-novis">+47.2%</td><td class="num col-vis">$1,216,454</td><td class="num col-vis">+39.4%</td></tr>
+
+      </tbody>
+    </table>
+
+    <h3>Detalle mensual (60 meses · 2021-2025)</h3>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Mes</th>
+            <th class="num col-saviia">Saviia $/m²</th><th class="num col-saviia">u.</th>
+            <th class="num col-novis">No-VIS $/m²</th><th class="num col-novis">u.</th>
+            <th class="num col-vis">VIS $/m²</th><th class="num col-vis">u.</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td>Dic 25</td><td class="num col-saviia">$5,961,651</td><td class="num col-saviia">7</td><td class="num col-novis">$4,976,177</td><td class="num col-novis">39</td><td class="num col-vis">$4,516,434</td><td class="num col-vis">34</td></tr>
+<tr><td>Nov 25</td><td class="num col-saviia">$5,955,259</td><td class="num col-saviia">2</td><td class="num col-novis">$5,191,420</td><td class="num col-novis">74</td><td class="num col-vis">$4,558,057</td><td class="num col-vis">57</td></tr>
+<tr><td>Oct 25</td><td class="num col-saviia">$5,561,682</td><td class="num col-saviia">7</td><td class="num col-novis">$5,191,860</td><td class="num col-novis">67</td><td class="num col-vis">$4,535,139</td><td class="num col-vis">65</td></tr>
+<tr><td>Sep 25</td><td class="num col-saviia">$5,604,003</td><td class="num col-saviia">9</td><td class="num col-novis">$4,937,290</td><td class="num col-novis">32</td><td class="num col-vis">$4,444,116</td><td class="num col-vis">75</td></tr>
+<tr><td>Ago 25</td><td class="num col-saviia">$5,622,038</td><td class="num col-saviia">6</td><td class="num col-novis">$4,927,243</td><td class="num col-novis">40</td><td class="num col-vis">$4,440,411</td><td class="num col-vis">76</td></tr>
+<tr><td>Jul 25</td><td class="num col-saviia">$5,538,154</td><td class="num col-saviia">11</td><td class="num col-novis">$4,628,399</td><td class="num col-novis">65</td><td class="num col-vis">$4,223,941</td><td class="num col-vis">103</td></tr>
+<tr><td>Jun 25</td><td class="num col-saviia">$5,352,414</td><td class="num col-saviia">7</td><td class="num col-novis">$4,443,013</td><td class="num col-novis">47</td><td class="num col-vis">$4,260,591</td><td class="num col-vis">84</td></tr>
+<tr><td>May 25</td><td class="num col-saviia">$5,295,265</td><td class="num col-saviia">9</td><td class="num col-novis">$4,622,515</td><td class="num col-novis">40</td><td class="num col-vis">$4,251,577</td><td class="num col-vis">96</td></tr>
+<tr><td>Abr 25</td><td class="num col-saviia">$5,360,633</td><td class="num col-saviia">1</td><td class="num col-novis">$4,527,497</td><td class="num col-novis">31</td><td class="num col-vis">$4,238,846</td><td class="num col-vis">81</td></tr>
+<tr><td>Mar 25</td><td class="num col-saviia">$5,248,106</td><td class="num col-saviia">4</td><td class="num col-novis">$4,663,600</td><td class="num col-novis">35</td><td class="num col-vis">$4,194,417</td><td class="num col-vis">110</td></tr>
+<tr><td>Feb 25</td><td class="num col-saviia">$5,394,765</td><td class="num col-saviia">9</td><td class="num col-novis">$4,631,870</td><td class="num col-novis">33</td><td class="num col-vis">$4,235,904</td><td class="num col-vis">97</td></tr>
+<tr><td>Ene 25</td><td class="num col-saviia">$5,175,469</td><td class="num col-saviia">7</td><td class="num col-novis">$4,641,868</td><td class="num col-novis">31</td><td class="num col-vis">$4,139,211</td><td class="num col-vis">97</td></tr>
+<tr><td>Dic 24</td><td class="num col-saviia">$5,231,619</td><td class="num col-saviia">10</td><td class="num col-novis">$4,653,188</td><td class="num col-novis">45</td><td class="num col-vis">$4,228,679</td><td class="num col-vis">89</td></tr>
+<tr><td>Nov 24</td><td class="num col-saviia">$5,296,409</td><td class="num col-saviia">5</td><td class="num col-novis">$4,637,495</td><td class="num col-novis">23</td><td class="num col-vis">$4,493,007</td><td class="num col-vis">60</td></tr>
+<tr><td>Oct 24</td><td class="num col-saviia">$5,184,454</td><td class="num col-saviia">12</td><td class="num col-novis">$4,526,876</td><td class="num col-novis">21</td><td class="num col-vis">$4,099,307</td><td class="num col-vis">31</td></tr>
+<tr><td>Sep 24</td><td class="num col-saviia">$4,717,382</td><td class="num col-saviia">1</td><td class="num col-novis">$4,376,573</td><td class="num col-novis">26</td><td class="num col-vis">$4,090,379</td><td class="num col-vis">32</td></tr>
+<tr><td>Ago 24</td><td class="num col-saviia">$4,858,916</td><td class="num col-saviia">7</td><td class="num col-novis">$4,614,872</td><td class="num col-novis">35</td><td class="num col-vis">$4,154,296</td><td class="num col-vis">46</td></tr>
+<tr><td>Jul 24</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$4,465,100</td><td class="num col-novis">27</td><td class="num col-vis">$4,248,168</td><td class="num col-vis">71</td></tr>
+<tr><td>Jun 24</td><td class="num col-saviia">$5,270,588</td><td class="num col-saviia">7</td><td class="num col-novis">$4,342,994</td><td class="num col-novis">19</td><td class="num col-vis">$3,988,285</td><td class="num col-vis">47</td></tr>
+<tr><td>May 24</td><td class="num col-saviia">$5,228,049</td><td class="num col-saviia">3</td><td class="num col-novis">$4,267,191</td><td class="num col-novis">22</td><td class="num col-vis">$3,967,072</td><td class="num col-vis">77</td></tr>
+<tr><td>Abr 24</td><td class="num col-saviia">$5,017,990</td><td class="num col-saviia">5</td><td class="num col-novis">$4,760,741</td><td class="num col-novis">21</td><td class="num col-vis">$3,926,421</td><td class="num col-vis">59</td></tr>
+<tr><td>Mar 24</td><td class="num col-saviia">$5,165,788</td><td class="num col-saviia">2</td><td class="num col-novis">$4,625,028</td><td class="num col-novis">29</td><td class="num col-vis">$3,997,668</td><td class="num col-vis">56</td></tr>
+<tr><td>Feb 24</td><td class="num col-saviia">$4,740,973</td><td class="num col-saviia">1</td><td class="num col-novis">$4,472,545</td><td class="num col-novis">33</td><td class="num col-vis">$4,003,363</td><td class="num col-vis">56</td></tr>
+<tr><td>Ene 24</td><td class="num col-saviia">$4,560,446</td><td class="num col-saviia">2</td><td class="num col-novis">$4,567,595</td><td class="num col-novis">48</td><td class="num col-vis">$3,994,890</td><td class="num col-vis">53</td></tr>
+<tr><td>Dic 23</td><td class="num col-saviia">$4,626,844</td><td class="num col-saviia">2</td><td class="num col-novis">$4,324,454</td><td class="num col-novis">22</td><td class="num col-vis">$4,191,670</td><td class="num col-vis">13</td></tr>
+<tr><td>Nov 23</td><td class="num col-saviia">$4,459,164</td><td class="num col-saviia">5</td><td class="num col-novis">$4,321,839</td><td class="num col-novis">17</td><td class="num col-vis">$3,974,110</td><td class="num col-vis">30</td></tr>
+<tr><td>Oct 23</td><td class="num col-saviia">$4,542,143</td><td class="num col-saviia">5</td><td class="num col-novis">$4,386,321</td><td class="num col-novis">28</td><td class="num col-vis">$3,884,378</td><td class="num col-vis">47</td></tr>
+<tr><td>Sep 23</td><td class="num col-saviia">$4,578,375</td><td class="num col-saviia">2</td><td class="num col-novis">$4,402,758</td><td class="num col-novis">35</td><td class="num col-vis">$4,126,477</td><td class="num col-vis">47</td></tr>
+<tr><td>Ago 23</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$4,311,020</td><td class="num col-novis">42</td><td class="num col-vis">$3,942,473</td><td class="num col-vis">88</td></tr>
+<tr><td>Jul 23</td><td class="num col-saviia">$4,516,956</td><td class="num col-saviia">5</td><td class="num col-novis">$4,325,570</td><td class="num col-novis">32</td><td class="num col-vis">$3,734,210</td><td class="num col-vis">49</td></tr>
+<tr><td>Jun 23</td><td class="num col-saviia">$4,521,454</td><td class="num col-saviia">3</td><td class="num col-novis">$4,386,158</td><td class="num col-novis">15</td><td class="num col-vis">$3,707,141</td><td class="num col-vis">59</td></tr>
+<tr><td>May 23</td><td class="num col-saviia">$4,525,088</td><td class="num col-saviia">7</td><td class="num col-novis">$4,163,943</td><td class="num col-novis">30</td><td class="num col-vis">$3,598,306</td><td class="num col-vis">60</td></tr>
+<tr><td>Abr 23</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$4,114,166</td><td class="num col-novis">46</td><td class="num col-vis">$3,675,046</td><td class="num col-vis">66</td></tr>
+<tr><td>Mar 23</td><td class="num col-saviia">$4,043,597</td><td class="num col-saviia">1</td><td class="num col-novis">$4,076,263</td><td class="num col-novis">35</td><td class="num col-vis">$3,649,719</td><td class="num col-vis">45</td></tr>
+<tr><td>Feb 23</td><td class="num col-saviia">$4,268,901</td><td class="num col-saviia">2</td><td class="num col-novis">$3,962,480</td><td class="num col-novis">27</td><td class="num col-vis">$3,226,245</td><td class="num col-vis">153</td></tr>
+<tr><td>Ene 23</td><td class="num col-saviia">$4,234,757</td><td class="num col-saviia">7</td><td class="num col-novis">$4,150,121</td><td class="num col-novis">44</td><td class="num col-vis">$3,607,806</td><td class="num col-vis">33</td></tr>
+<tr><td>Dic 22</td><td class="num col-saviia">$4,094,071</td><td class="num col-saviia">9</td><td class="num col-novis">$4,018,220</td><td class="num col-novis">26</td><td class="num col-vis">$3,612,302</td><td class="num col-vis">31</td></tr>
+<tr><td>Nov 22</td><td class="num col-saviia">$4,058,448</td><td class="num col-saviia">10</td><td class="num col-novis">$4,033,377</td><td class="num col-novis">39</td><td class="num col-vis">$3,505,597</td><td class="num col-vis">51</td></tr>
+<tr><td>Oct 22</td><td class="num col-saviia">$4,073,276</td><td class="num col-saviia">5</td><td class="num col-novis">$4,033,046</td><td class="num col-novis">50</td><td class="num col-vis">$3,550,628</td><td class="num col-vis">93</td></tr>
+<tr><td>Sep 22</td><td class="num col-saviia">$4,130,927</td><td class="num col-saviia">1</td><td class="num col-novis">$3,898,405</td><td class="num col-novis">51</td><td class="num col-vis">$3,207,626</td><td class="num col-vis">97</td></tr>
+<tr><td>Ago 22</td><td class="num col-saviia">$3,937,922</td><td class="num col-saviia">9</td><td class="num col-novis">$3,905,107</td><td class="num col-novis">50</td><td class="num col-vis">$3,210,418</td><td class="num col-vis">116</td></tr>
+<tr><td>Jul 22</td><td class="num col-saviia">$3,946,352</td><td class="num col-saviia">28</td><td class="num col-novis">$3,823,455</td><td class="num col-novis">56</td><td class="num col-vis">$3,294,515</td><td class="num col-vis">185</td></tr>
+<tr><td>Jun 22</td><td class="num col-saviia">$3,983,001</td><td class="num col-saviia">4</td><td class="num col-novis">$3,741,275</td><td class="num col-novis">63</td><td class="num col-vis">$3,081,934</td><td class="num col-vis">94</td></tr>
+<tr><td>May 22</td><td class="num col-saviia">$3,830,894</td><td class="num col-saviia">15</td><td class="num col-novis">$3,682,617</td><td class="num col-novis">44</td><td class="num col-vis">$3,066,424</td><td class="num col-vis">76</td></tr>
+<tr><td>Abr 22</td><td class="num col-saviia">$3,795,825</td><td class="num col-saviia">8</td><td class="num col-novis">$3,636,652</td><td class="num col-novis">50</td><td class="num col-vis">$3,116,613</td><td class="num col-vis">119</td></tr>
+<tr><td>Mar 22</td><td class="num col-saviia">$3,693,224</td><td class="num col-saviia">8</td><td class="num col-novis">$3,583,785</td><td class="num col-novis">51</td><td class="num col-vis">$3,093,191</td><td class="num col-vis">122</td></tr>
+<tr><td>Feb 22</td><td class="num col-saviia">$3,754,737</td><td class="num col-saviia">10</td><td class="num col-novis">$3,461,241</td><td class="num col-novis">82</td><td class="num col-vis">$3,143,299</td><td class="num col-vis">94</td></tr>
+<tr><td>Ene 22</td><td class="num col-saviia">$3,830,452</td><td class="num col-saviia">9</td><td class="num col-novis">$3,412,346</td><td class="num col-novis">92</td><td class="num col-vis">$2,979,218</td><td class="num col-vis">124</td></tr>
+<tr><td>Dic 21</td><td class="num col-saviia">$3,830,161</td><td class="num col-saviia">8</td><td class="num col-novis">$3,590,132</td><td class="num col-novis">60</td><td class="num col-vis">$3,157,559</td><td class="num col-vis">43</td></tr>
+<tr><td>Nov 21</td><td class="num col-saviia">$3,830,385</td><td class="num col-saviia">5</td><td class="num col-novis">$3,320,889</td><td class="num col-novis">36</td><td class="num col-vis">$3,155,507</td><td class="num col-vis">71</td></tr>
+<tr><td>Oct 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,361,598</td><td class="num col-novis">42</td><td class="num col-vis">$3,168,639</td><td class="num col-vis">69</td></tr>
+<tr><td>Sep 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,520,592</td><td class="num col-novis">47</td><td class="num col-vis">$3,168,639</td><td class="num col-vis">68</td></tr>
+<tr><td>Ago 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,241,458</td><td class="num col-novis">46</td><td class="num col-vis">$3,155,325</td><td class="num col-vis">60</td></tr>
+<tr><td>Jul 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,228,317</td><td class="num col-novis">45</td><td class="num col-vis">$2,948,718</td><td class="num col-vis">116</td></tr>
+<tr><td>Jun 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,272,405</td><td class="num col-novis">50</td><td class="num col-vis">$2,938,856</td><td class="num col-vis">44</td></tr>
+<tr><td>May 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,246,868</td><td class="num col-novis">37</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr>
+<tr><td>Abr 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,255,576</td><td class="num col-novis">43</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr>
+<tr><td>Mar 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,175,835</td><td class="num col-novis">60</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr>
+<tr><td>Feb 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$3,058,603</td><td class="num col-novis">53</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr>
+<tr><td>Ene 21</td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">$2,978,616</td><td class="num col-novis">39</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. EVOLUCIÓN SAVIIA -->
+  <div class="section">
+    <h2>4 · Evolución del precio m² de Saviia · desde 2021</h2>
+    <div class="h-sub">Histórico mensual exclusivo de Saviia desde el inicio de ventas (nov 2021) hasta dic 2025.</div>
+
+    <h3>Resumen anual Saviia</h3>
+    <table>
+      <thead><tr><th>Año</th><th class="num">Precio $/m²</th><th class="num">Variación YoY</th><th class="num">Unidades vendidas</th></tr></thead>
+      <tbody>
+        <tr><td><strong>2021</strong></td><td class="num">$3,830,247</td><td class="num">—</td><td class="num">13</td></tr>
+        <tr><td><strong>2022</strong></td><td class="num">$3,906,869</td><td class="num"><span class="delta-pos">+2.0%</span></td><td class="num">116</td></tr>
+        <tr><td><strong>2023</strong></td><td class="num">$4,447,857</td><td class="num"><span class="delta-pos">+13.8%</span></td><td class="num">39</td></tr>
+        <tr><td><strong>2024</strong></td><td class="num">$5,120,057</td><td class="num"><span class="delta-pos">+15.1%</span></td><td class="num">55</td></tr>
+        <tr><td><strong>2025</strong></td><td class="num">$5,492,662</td><td class="num"><span class="delta-pos">+7.3%</span></td><td class="num">79</td></tr>
+        <tr class="year-summary"><td>Total / Crecimiento</td><td class="num">+$1,662,415</td><td class="num"><span class="delta-pos">+43.4%</span></td><td class="num">302</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Detalle mensual Saviia</h3>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Mes</th><th class="num">Precio $/m²</th><th class="num">Unidades vendidas</th></tr></thead>
+        <tbody>
+<tr><td>Dic 25</td><td class="num">$5,961,651</td><td class="num">7</td></tr>
+<tr><td>Nov 25</td><td class="num">$5,955,259</td><td class="num">2</td></tr>
+<tr><td>Oct 25</td><td class="num">$5,561,682</td><td class="num">7</td></tr>
+<tr><td>Sep 25</td><td class="num">$5,604,003</td><td class="num">9</td></tr>
+<tr><td>Ago 25</td><td class="num">$5,622,038</td><td class="num">6</td></tr>
+<tr><td>Jul 25</td><td class="num">$5,538,154</td><td class="num">11</td></tr>
+<tr><td>Jun 25</td><td class="num">$5,352,414</td><td class="num">7</td></tr>
+<tr><td>May 25</td><td class="num">$5,295,265</td><td class="num">9</td></tr>
+<tr><td>Abr 25</td><td class="num">$5,360,633</td><td class="num">1</td></tr>
+<tr><td>Mar 25</td><td class="num">$5,248,106</td><td class="num">4</td></tr>
+<tr><td>Feb 25</td><td class="num">$5,394,765</td><td class="num">9</td></tr>
+<tr><td>Ene 25</td><td class="num">$5,175,469</td><td class="num">7</td></tr>
+<tr><td>Dic 24</td><td class="num">$5,231,619</td><td class="num">10</td></tr>
+<tr><td>Nov 24</td><td class="num">$5,296,409</td><td class="num">5</td></tr>
+<tr><td>Oct 24</td><td class="num">$5,184,454</td><td class="num">12</td></tr>
+<tr><td>Sep 24</td><td class="num">$4,717,382</td><td class="num">1</td></tr>
+<tr><td>Ago 24</td><td class="num">$4,858,916</td><td class="num">7</td></tr>
+<tr><td>Jun 24</td><td class="num">$5,270,588</td><td class="num">7</td></tr>
+<tr><td>May 24</td><td class="num">$5,228,049</td><td class="num">3</td></tr>
+<tr><td>Abr 24</td><td class="num">$5,017,990</td><td class="num">5</td></tr>
+<tr><td>Mar 24</td><td class="num">$5,165,788</td><td class="num">2</td></tr>
+<tr><td>Feb 24</td><td class="num">$4,740,973</td><td class="num">1</td></tr>
+<tr><td>Ene 24</td><td class="num">$4,560,446</td><td class="num">2</td></tr>
+<tr><td>Dic 23</td><td class="num">$4,626,844</td><td class="num">2</td></tr>
+<tr><td>Nov 23</td><td class="num">$4,459,164</td><td class="num">5</td></tr>
+<tr><td>Oct 23</td><td class="num">$4,542,143</td><td class="num">5</td></tr>
+<tr><td>Sep 23</td><td class="num">$4,578,375</td><td class="num">2</td></tr>
+<tr><td>Jul 23</td><td class="num">$4,516,956</td><td class="num">5</td></tr>
+<tr><td>Jun 23</td><td class="num">$4,521,454</td><td class="num">3</td></tr>
+<tr><td>May 23</td><td class="num">$4,525,088</td><td class="num">7</td></tr>
+<tr><td>Mar 23</td><td class="num">$4,043,597</td><td class="num">1</td></tr>
+<tr><td>Feb 23</td><td class="num">$4,268,901</td><td class="num">2</td></tr>
+<tr><td>Ene 23</td><td class="num">$4,234,757</td><td class="num">7</td></tr>
+<tr><td>Dic 22</td><td class="num">$4,094,071</td><td class="num">9</td></tr>
+<tr><td>Nov 22</td><td class="num">$4,058,448</td><td class="num">10</td></tr>
+<tr><td>Oct 22</td><td class="num">$4,073,276</td><td class="num">5</td></tr>
+<tr><td>Sep 22</td><td class="num">$4,130,927</td><td class="num">1</td></tr>
+<tr><td>Ago 22</td><td class="num">$3,937,922</td><td class="num">9</td></tr>
+<tr><td>Jul 22</td><td class="num">$3,946,352</td><td class="num">28</td></tr>
+<tr><td>Jun 22</td><td class="num">$3,983,001</td><td class="num">4</td></tr>
+<tr><td>May 22</td><td class="num">$3,830,894</td><td class="num">15</td></tr>
+<tr><td>Abr 22</td><td class="num">$3,795,825</td><td class="num">8</td></tr>
+<tr><td>Mar 22</td><td class="num">$3,693,224</td><td class="num">8</td></tr>
+<tr><td>Feb 22</td><td class="num">$3,754,737</td><td class="num">10</td></tr>
+<tr><td>Ene 22</td><td class="num">$3,830,452</td><td class="num">9</td></tr>
+<tr><td>Dic 21</td><td class="num">$3,830,161</td><td class="num">8</td></tr>
+<tr><td>Nov 21</td><td class="num">$3,830,385</td><td class="num">5</td></tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. ROTACIÓN -->
+  <div class="section">
+    <h2>5 · Rotación promedio · desagregado</h2>
+    <div class="h-sub">Meses para agotar el inventario disponible al ritmo actual de ventas. Comparativa entre Saviia, No-VIS zona y VIS zona.</div>
+
+    <div class="kpi-grid">
+      <div class="kpi saviia"><div class="kpi-label">Saviia</div><div class="kpi-value">26.0</div><div class="kpi-detail">meses · 143 disp / 5.5 vel.</div></div>
+      <div class="kpi novis"><div class="kpi-label">Promedio No-VIS zona</div><div class="kpi-value">35.4</div><div class="kpi-detail">meses · 11 proyectos</div></div>
+      <div class="kpi vis"><div class="kpi-label">Promedio VIS zona</div><div class="kpi-value">45.4</div><div class="kpi-detail">meses · 9 proyectos</div></div>
+    </div>
+
+    <h3>Comparativa por segmento</h3>
+    <table>
+      <thead><tr><th>Segmento</th><th class="num">Proyectos</th><th class="num">Inv. inicial</th><th class="num">Vendidas</th><th class="num">Disponibles</th><th class="num">Vel. (u/mes)</th><th class="num">Rotación (meses)</th></tr></thead>
+      <tbody>
+        <tr><td><strong style="color:var(--saviia)">Saviia</strong></td><td class="num">1</td><td class="num">418</td><td class="num">275</td><td class="num">143</td><td class="num">5.5</td><td class="num">26.0</td></tr>
+        <tr><td><strong style="color:var(--novis)">No-VIS zona</strong></td><td class="num">11</td><td class="num">4,475</td><td class="num">3,131</td><td class="num">1,344</td><td class="num">6.7 avg</td><td class="num">35.4 avg</td></tr>
+        <tr><td><strong style="color:var(--vis)">VIS zona</strong></td><td class="num">9</td><td class="num">6,389</td><td class="num">3,811</td><td class="num">2,578</td><td class="num">13.6 avg</td><td class="num">45.4 avg</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. RECOMENDACIÓN -->
+  <div class="section" style="border:2px solid var(--saviia)">
+    <h2 style="color:var(--saviia)">6 · ¿Duppla debe comprar?</h2>
+
+    <!-- Veredicto -->
+    <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:20px;margin-bottom:18px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--saviia);font-weight:700">Veredicto</div>
+      <div style="font-size:28px;font-weight:800;color:var(--saviia);margin:6px 0">SÍ &mdash; pero negociar más</div>
+      <div style="font-size:13px;color:var(--text)">El proyecto es bueno (se vende rápido, ya colocó 65.8%, precio crece +9% anual), pero <strong>nos están cobrando 31% por encima del precio justo</strong> de la zona. Hay que pedir más descuento.</div>
+    </div>
+
+    <!-- FMP CLARO -->
+    <h3>Precio justo de mercado (FMP) vs lo que nos cobran</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Tipología</th>
+          <th class="num">Cantidad</th>
+          <th class="num">FMP zona /m²<br><span style="font-weight:400;text-transform:none">(precio justo)</span></th>
+          <th class="num">Nos cobran /m²<br><span style="font-weight:400;text-transform:none">(precio negociado)</span></th>
+          <th class="num">Sobreprecio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tipo C</strong> &mdash; 63.7 m²</td>
+          <td class="num">48</td>
+          <td class="num" style="color:#059669">$4,226,069</td>
+          <td class="num" style="color:#dc2626">$5,649,295</td>
+          <td class="num" style="color:#dc2626;font-weight:700">+33.7%</td>
+        </tr>
+        <tr>
+          <td><strong>Tipo B</strong> &mdash; 70.5 m²</td>
+          <td class="num">14</td>
+          <td class="num" style="color:#059669">$4,592,971</td>
+          <td class="num" style="color:#dc2626">$5,059,844</td>
+          <td class="num" style="color:var(--warn);font-weight:700">+10.2%</td>
+        </tr>
+        <tr>
+          <td><strong>Tipo E</strong> &mdash; 74.1 m²</td>
+          <td class="num">58</td>
+          <td class="num" style="color:#059669">$4,173,331</td>
+          <td class="num" style="color:#dc2626">$5,629,286</td>
+          <td class="num" style="color:#dc2626;font-weight:700">+34.9%</td>
+        </tr>
+        <tr class="total">
+          <td>TOTAL (120 apts)</td>
+          <td class="num">120</td>
+          <td class="num" style="color:#059669">$4,242,308</td>
+          <td class="num" style="color:#dc2626">$5,569,248</td>
+          <td class="num" style="color:#dc2626">+31.3%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--text);margin-top:12px;background:#fef3c7;padding:14px;border-radius:6px;border-left:4px solid var(--warn)">
+      <strong>En plata:</strong> Estamos pagando <strong>~$11,070 millones de más</strong> de lo que valen estos apartamentos según el mercado de la zona.
+      Tipo B es el menos castigado (+10%); Tipo C y Tipo E nos los están cobrando muy por encima del mercado (+34%).
+    </p>
+
+    <!-- ARGUMENTOS RESUMIDOS -->
+    <h3>Por qué SÍ y por qué NO</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:8px;padding:14px">
+        <div style="font-weight:700;color:#059669;margin-bottom:8px">A favor</div>
+        <ul style="margin-left:18px;font-size:13px;line-height:1.8">
+          <li>Saviia se vende <strong>más rápido</strong> que toda la zona (26m vs 35-45m)</li>
+          <li>La constructora ya colocó <strong>65.8%</strong> del proyecto = riesgo bajo</li>
+          <li>El precio creció <strong>+43% en 5 años</strong>, tendencia sostenida</li>
+          <li>Comprar 120 apts en bloque = <strong>poder de negociación</strong></li>
+        </ul>
+      </div>
+      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:14px">
+        <div style="font-weight:700;color:#dc2626;margin-bottom:8px">En contra</div>
+        <ul style="margin-left:18px;font-size:13px;line-height:1.8">
+          <li>Nos cobran <strong>+31% sobre el precio justo</strong> de la zona</li>
+          <li>Es el <strong>proyecto más caro</strong> de los 21 en 2 km</li>
+          <li>Descuento actual de solo <strong>-6.4%</strong>, muy bajo para el tamaño</li>
+          <li>Concentramos <strong>$46.5 mil M</strong> en una sola apuesta</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- NEGOCIACIÓN -->
+    <h3>¿Cuánto deberíamos pagar?</h3>
+    <table>
+      <thead><tr><th>Si negociamos…</th><th class="num">Precio /m²</th><th class="num">Inversión 120 apts</th><th>Veredicto</th></tr></thead>
+      <tbody>
+        <tr style="background:#fff7ed;font-weight:600"><td><strong>Lo que ofrecen ahora (-6.4%)</strong></td><td class="num">$5,572,108</td><td class="num">$46.55 mil M</td><td><span style="color:var(--warn);font-weight:600">Marginal · Negociar más</span></td></tr>
+        <tr><td>-15% sobre lista</td><td class="num">$5,061,970</td><td class="num">$42.3 mil M</td><td><span style="color:#059669;font-weight:600">Bueno · Recomendado</span></td></tr>
+        <tr><td>-25% sobre lista</td><td class="num">$4,466,444</td><td class="num">$37.3 mil M</td><td><span style="color:#059669;font-weight:600">Excelente · Objetivo ideal</span></td></tr>
+        <tr><td>-29% sobre lista (= FMP zona)</td><td class="num">$4,242,308</td><td class="num">$35.4 mil M</td><td><span style="color:#059669;font-weight:600">Pagaríamos el precio justo</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 7. METODOLOGÍA -->
+  <div class="section">
+    <h2>7 · Metodología</h2>
+    <div class="h-sub">¿De dónde sale cada dato y cómo se calculó.</div>
+
+    <h3>Fuentes de datos · BigQuery</h3>
+    <table>
+      <thead><tr><th>Tabla</th><th>Qué contiene</th><th>Sección donde se usa</th></tr></thead>
+      <tbody>
+        <tr><td><code>lgi.bogota_def_Def_12-25_proyectos</code></td><td>Maestro de proyectos: tamaño, tipo VIS/No-VIS, fechas, lat/lng</td><td>Sección 1, 2</td></tr>
+        <tr><td><code>lgi.bogota_def_Def_12-25_detalle</code></td><td>Inmuebles por proyecto: tipología, área, total y disponibles</td><td>Sección 1</td></tr>
+        <tr><td><code>lgi.bogota_def_Def_12-25_trends</code></td><td>Histórico mensual de ventas y precio m² por proyecto y tipología</td><td>Sección 3, 4</td></tr>
+        <tr><td><code>eval_inmuebles.comportamiento_vivienda_nueva</code></td><td>Vista consolidada con coordenadas y métricas de ritmo y rotación</td><td>Sección 3, 5</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cálculos por sección</h3>
+    <table>
+      <thead><tr><th>Métrica</th><th>Cálculo</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Tamaño total Saviia</strong></td><td>Campo <code>numunidades</code> WHERE codproyecto=500465</td><td class="num">418 apts</td></tr>
+        <tr><td><strong>Vendidos</strong></td><td>Campo <code>ventaunidades</code> de Saviia</td><td class="num">275</td></tr>
+        <tr><td><strong>Disponibles</strong></td><td>numunidades − ventaunidades</td><td class="num">143</td></tr>
+        <tr><td><strong>120 ofertados</strong></td><td>Dato externo del equipo de inversión (no de BigQuery)</td><td class="num">120 apts</td></tr>
+        <tr><td><strong>% del proyecto</strong></td><td>120 / 418</td><td class="num">28.7%</td></tr>
+        <tr><td><strong>% del disponible</strong></td><td>120 / 143</td><td class="num">83.9%</td></tr>
+        <tr><td><strong>Filtro 2 km</strong></td><td><code>ST_DISTANCE(ST_GEOGPOINT(lng,lat), ST_GEOGPOINT(-73.991969, 5.015443)) ≤ 2000</code> + venta en último año</td><td class="num">21 proyectos</td></tr>
+        <tr><td><strong>Precio m² mensual ponderado</strong></td><td>Σ(precio_m² × ventas) / Σ(ventas) por mes y segmento</td><td>—</td></tr>
+        <tr><td><strong>Velocidad mensual</strong></td><td>unidades_vendidas / DATE_DIFF(última_venta − inicio_ventas, MONTH)</td><td>—</td></tr>
+        <tr><td><strong>Rotación Saviia</strong></td><td>143 disp / 5.5 vel</td><td class="num">26.0 meses</td></tr>
+        <tr><td><strong>Rotación No-VIS zona</strong></td><td>AVG(rotación) de los 11 proyectos No-VIS exc. Saviia</td><td class="num">35.4 meses</td></tr>
+        <tr><td><strong>Rotación VIS zona</strong></td><td>AVG(rotación) de los 9 proyectos VIS</td><td class="num">45.4 meses</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Notas y supuestos</h3>
+    <table>
+      <thead><tr><th>Aspecto</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Corte de datos</strong></td><td>LGI / Galería Inmobiliaria a diciembre 2025</td></tr>
+        <tr><td><strong>Filtro temporal competencia</strong></td><td>Solo proyectos con venta registrada en el último año (descarta proyectos terminados o sin actividad)</td></tr>
+        <tr><td><strong>Categorización VIS / No-VIS</strong></td><td>Campo <code>vis_novis</code> de la tabla maestro de proyectos</td></tr>
+        <tr><td><strong>Promedio ponderado vs aritmético</strong></td><td>Se usa promedio ponderado por unidades vendidas para reflejar el precio efectivo de cierre, no el precio de lista publicado</td></tr>
+        <tr><td><strong>Tipologías Saviia</strong></td><td>4 tipos: 63.7 / 70.5 / 74.1 / 85.35 m². 120 ofertados se distribuyen en 3 tipos (Tipo C, B, E)</td></tr>
+        <tr><td><strong>Coordenadas Saviia</strong></td><td>Latitud 5.015443 · Longitud -73.991969 (Cll. 6 # 28-44, Zipaquirá)</td></tr>
+      </tbody>
+    </table>
+
+    <p style="margin-top:18px;font-size:11px;color:var(--muted)">Generado: 2026-04-20 · Fuente principal: BigQuery <code>complete-verve-362421</code></p>
+  </div>
+
+</div>
+</body>
+</html>
