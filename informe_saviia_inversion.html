@@ -68,6 +68,8 @@
   details.drop > .drop-body{padding:0 16px 16px}
   .chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-top:10px}
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body>
 <div class="container">
@@ -110,9 +112,32 @@
     </div>
   </div>
 
-  <!-- 2. HISTÓRICO ZONA DESAGREGADO -->
+  
+  <!-- 2. MAPA DE COMPETIDORES -->
   <div class="section">
-    <h2>2 · Histórico precio en radio 2 km · 5 años · desagregado</h2>
+    <h2>2 · Mapa de competidores · radio 2 km</h2>
+    <div class="h-sub">Ubicación de Saviia (rojo) y los 20 proyectos competidores (azul) en el radio de análisis. Pasá el mouse o clickeá cada punto para ver detalles del proyecto.</div>
+
+    <div class="filters-bar" data-chart="mapa">
+      <span class="filters-label">Mostrar:</span>
+      <label class="filter-chip saviia"><input type="checkbox" data-s="focal" checked><span class="dot"></span>Saviia</label>
+      <label class="filter-chip novis"><input type="checkbox" data-s="novis" checked><span class="dot"></span>No-VIS competidores</label>
+      <label class="filter-chip vis"><input type="checkbox" data-s="vis" checked><span class="dot"></span>VIS competidores</label>
+    </div>
+
+    <div id="mapa-proyectos" style="width:100%;height:520px;border-radius:10px;border:1px solid var(--border);margin-top:4px"></div>
+
+    <div style="font-size:12px;color:var(--muted);margin-top:10px">El círculo naranja punteado muestra el radio de 2 km alrededor de Saviia (filtro geográfico del análisis). Tamaño del marcador proporcional al inventario del proyecto.</div>
+
+    <script>
+      const PROYECTO_FOCAL = {"codproyecto": 500465, "nombre": "Saviia", "vendedor": "Tecnourbana", "lat": 5.015443, "lng": -73.991969, "vis_novis": "No Vis", "inv": 418, "vend": 275, "disp": 143, "precio": 5955259, "dist": 0};
+      const COMPETIDORES = [{"codproyecto": 500873, "nombre": "Qanvas", "vendedor": "Incol", "vis_novis": "No Vis", "inv": 280, "vend": 58, "disp": 222, "precio": 4980563, "lat": 5.016934, "lng": -73.992663, "dist": 183}, {"codproyecto": 500088, "nombre": "Aldea de San Marcos", "vendedor": "Benjamin Sanchez", "vis_novis": "No Vis", "inv": 334, "vend": 243, "disp": 91, "precio": 4226069, "lat": 5.015591, "lng": -73.99411, "dist": 238}, {"codproyecto": 500491, "nombre": "Ciudadela La Alameda - Arborea", "vendedor": "Const. Capital", "vis_novis": "No Vis", "inv": 564, "vend": 523, "disp": 41, "precio": 4854659, "lat": 5.017773, "lng": -73.994562, "dist": 387}, {"codproyecto": 500620, "nombre": "Ciudadela La Alameda - Solare", "vendedor": "Const. Capital", "vis_novis": "Vis", "inv": 720, "vend": 716, "disp": 4, "precio": 4443393, "lat": 5.018263, "lng": -73.994823, "dist": 445}, {"codproyecto": 501185, "nombre": "Ciudadela La Alameda - Verdi", "vendedor": "Const. Capital", "vis_novis": "Vis", "inv": 816, "vend": 406, "disp": 410, "precio": 4793561, "lat": 5.01525, "lng": -73.99601, "dist": 448}, {"codproyecto": 501332, "nombre": "Ciudadela La Alameda - Lúmina", "vendedor": "Const. Capital", "vis_novis": "No Vis", "inv": 658, "vend": 88, "disp": 570, "precio": 5461723, "lat": 5.01515, "lng": -73.99611, "dist": 460}, {"codproyecto": 56213, "nombre": "Hacienda San José", "vendedor": "Const. Bolivar", "vis_novis": "No Vis", "inv": 616, "vend": 581, "disp": 35, "precio": 3671875, "lat": 5.01168, "lng": -73.99399, "dist": 475}, {"codproyecto": 500405, "nombre": "Ciudadela La Alameda - Botanika", "vendedor": "Const. Capital", "vis_novis": "Vis", "inv": 768, "vend": 768, "disp": 0, "precio": 4189744, "lat": 5.018647, "lng": -73.996489, "dist": 614}, {"codproyecto": 56199, "nombre": "La Quinta 3", "vendedor": "Inv. Alcabama", "vis_novis": "No Vis", "inv": 423, "vend": 423, "disp": 0, "precio": 4173331, "lat": 5.020625, "lng": -73.99415, "dist": 625}, {"codproyecto": 500078, "nombre": "San Simón La Quinta", "vendedor": "Marval", "vis_novis": "No Vis", "inv": 408, "vend": 408, "disp": 0, "precio": 4592971, "lat": 5.020625, "lng": -73.99415, "dist": 625}, {"codproyecto": 500623, "nombre": "Ciudadela Armonia - Madero", "vendedor": "Inv. Alcabama", "vis_novis": "No Vis", "inv": 298, "vend": 261, "disp": 37, "precio": 4874446, "lat": 5.020993, "lng": -73.988682, "dist": 717}, {"codproyecto": 500721, "nombre": "San Sebastián La Quinta", "vendedor": "Marval", "vis_novis": "Vis", "inv": 888, "vend": 152, "disp": 736, "precio": 4680135, "lat": 5.022599, "lng": -73.992582, "dist": 799}, {"codproyecto": 500480, "nombre": "Ciudadela Armonía - Magnolias", "vendedor": "Inv. Alcabama", "vis_novis": "Vis", "inv": 735, "vend": 717, "disp": 18, "precio": 3861956, "lat": 5.021851, "lng": -73.988315, "dist": 819}, {"codproyecto": 500406, "nombre": "San Mateo La Quinta", "vendedor": "Marval", "vis_novis": "No Vis", "inv": 456, "vend": 188, "disp": 268, "precio": 5575017, "lat": 5.025097, "lng": -73.99149, "dist": 1075}, {"codproyecto": 501184, "nombre": "Ciudadela Armonía - Gardenias", "vendedor": "Artis Urbano", "vis_novis": "Vis", "inv": 770, "vend": 312, "disp": 458, "precio": 4241948, "lat": 5.0254028, "lng": -73.9877658, "dist": 1201}, {"codproyecto": 500812, "nombre": "Ventura", "vendedor": "Inv. Alcabama", "vis_novis": "Vis", "inv": 300, "vend": 292, "disp": 8, "precio": 3522182, "lat": 5.025707, "lng": -73.987774, "dist": 1232}, {"codproyecto": 500211, "nombre": "Mitika Aptos", "vendedor": "Actual Colombia Inm.", "vis_novis": "No Vis", "inv": 382, "vend": 352, "disp": 30, "precio": 5138521, "lat": 5.012455, "lng": -74.003289, "dist": 1297}, {"codproyecto": 501154, "nombre": "Reserva de Pasoancho", "vendedor": "H & G Construcciones", "vis_novis": "No Vis", "inv": 56, "vend": 6, "disp": 50, "precio": 3676564, "lat": 5.00681, "lng": -73.98025, "dist": 1614}, {"codproyecto": 500518, "nombre": "Paseo San Rafael", "vendedor": "Marval", "vis_novis": "Vis", "inv": 672, "vend": 273, "disp": 399, "precio": 4644437, "lat": 5.031233, "lng": -73.98803, "dist": 1809}, {"codproyecto": 500723, "nombre": "Terrablanca - Candil", "vendedor": "Once Constructora", "vis_novis": "Vis", "inv": 720, "vend": 175, "disp": 545, "precio": 4440000, "lat": 5.031909, "lng": -73.986242, "dist": 1938}];
+    </script>
+  </div>
+
+<!-- 3. HISTÓRICO ZONA DESAGREGADO -->
+  <div class="section">
+    <h2>3 · Histórico precio en radio 2 km · 5 años · desagregado</h2>
     <div class="h-sub">Precio promedio mensual ponderado por segmento. Saviia (nuestro proyecto) vs No-VIS zona (11 proyectos) vs VIS zona (9 proyectos).</div>
 
     <h3>Resumen anual</h3>
@@ -258,9 +283,9 @@
     </details>
   </div>
 
-  <!-- 3. ROTACIÓN -->
+  <!-- 4. ROTACIÓN -->
   <div class="section">
-    <h2>3 · Rotación promedio · desagregado</h2>
+    <h2>4 · Rotación promedio · desagregado</h2>
     <div class="h-sub">Años para agotar el inventario disponible al ritmo actual de ventas, y porcentaje de inventario ya colocado. Comparativa entre Saviia, No-VIS zona y VIS zona.</div>
 
     <div class="kpi-grid">
@@ -316,30 +341,87 @@
     </table>
     <div style="font-size:12px;color:var(--muted);margin-top:8px">% absorción anual = ventas del año / inventario total del segmento. Saviia: 418 unidades · No-VIS zona: 4,475 (11 proys) · VIS zona: 6,389 (9 proys). <strong>Nota:</strong> el denominador incluye todos los proyectos del segmento aunque algunos no hubieran iniciado ventas ese año, así que los porcentajes tempranos (2020-2021) subestiman la absorción real de proyectos activos.</div>
 
+  
+    <h3>Rotación año a año · tendencia</h3>
+    <div class="filters-bar" data-chart="sec3rot">
+      <span class="filters-label">Mostrar:</span>
+      <label class="filter-chip saviia"><input type="checkbox" data-s="saviia" checked><span class="dot"></span>Saviia</label>
+      <label class="filter-chip novis"><input type="checkbox" data-s="novis" checked><span class="dot"></span>No-VIS zona</label>
+      <label class="filter-chip vis"><input type="checkbox" data-s="vis" checked><span class="dot"></span>VIS zona</label>
+    </div>
+    <div class="chart-wrap">
+<div class="chart-host" style="position:relative">
+<svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+  <rect x="60" y="30" width="900" height="240" fill="#fafbfc" stroke="#e2e8f0"/>
+  <line x1="60" y1="270.0" x2="960" y2="270.0" stroke="#e2e8f0"/><line x1="60" y1="235.7" x2="960" y2="235.7" stroke="#e2e8f0"/><line x1="60" y1="201.4" x2="960" y2="201.4" stroke="#e2e8f0"/><line x1="60" y1="167.1" x2="960" y2="167.1" stroke="#e2e8f0"/><line x1="60" y1="132.9" x2="960" y2="132.9" stroke="#e2e8f0"/><line x1="60" y1="98.6" x2="960" y2="98.6" stroke="#e2e8f0"/><line x1="60" y1="64.3" x2="960" y2="64.3" stroke="#e2e8f0"/><line x1="60" y1="30.0" x2="960" y2="30.0" stroke="#e2e8f0"/>
+  <text x="54" y="273.0" text-anchor="end" font-size="10" fill="#64748b">0 a</text><text x="54" y="238.7" text-anchor="end" font-size="10" fill="#64748b">5 a</text><text x="54" y="204.4" text-anchor="end" font-size="10" fill="#64748b">10 a</text><text x="54" y="170.1" text-anchor="end" font-size="10" fill="#64748b">15 a</text><text x="54" y="135.9" text-anchor="end" font-size="10" fill="#64748b">20 a</text><text x="54" y="101.6" text-anchor="end" font-size="10" fill="#64748b">25 a</text><text x="54" y="67.3" text-anchor="end" font-size="10" fill="#64748b">30 a</text><text x="54" y="33.0" text-anchor="end" font-size="10" fill="#64748b">35 a</text>
+  <text x="60.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2020</text><text x="240.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2021</text><text x="420.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2022</text><text x="600.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2023</text><text x="780.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2024</text><text x="960.0" y="286" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2025</text>
+  <path d="M240.0,49.5L420.0,246.1L600.0,219.2L780.0,238.8L960.0,253.1" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linejoin="round" data-series="saviia"/><path d="M60.0,197.8L240.0,220.2L420.0,233.4L600.0,217.8L780.0,221.6L960.0,242.8" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linejoin="round" data-series="novis"/><path d="M240.0,177.0L420.0,236.2L600.0,223.1L780.0,229.2L960.0,246.4" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linejoin="round" data-series="vis"/>
+  <circle class="pt" cx="240.0" cy="49.5" r="4" fill="#ea580c" data-series="saviia" data-label="SAVIIA" data-mes="2021" data-val="32.2 años (13 vendidas · 418 disp al inicio)" data-color="#ea580c"/><circle class="hit" cx="240.0" cy="49.5" r="10" fill="transparent" data-series="saviia" data-label="SAVIIA" data-mes="2021" data-val="32.2 años (13 vendidas · 418 disp al inicio)" data-color="#ea580c"/><circle class="pt" cx="420.0" cy="246.1" r="4" fill="#ea580c" data-series="saviia" data-label="SAVIIA" data-mes="2022" data-val="3.5 años (116 vendidas · 405 disp al inicio)" data-color="#ea580c"/><circle class="hit" cx="420.0" cy="246.1" r="10" fill="transparent" data-series="saviia" data-label="SAVIIA" data-mes="2022" data-val="3.5 años (116 vendidas · 405 disp al inicio)" data-color="#ea580c"/><circle class="pt" cx="600.0" cy="219.2" r="4" fill="#ea580c" data-series="saviia" data-label="SAVIIA" data-mes="2023" data-val="7.4 años (39 vendidas · 289 disp al inicio)" data-color="#ea580c"/><circle class="hit" cx="600.0" cy="219.2" r="10" fill="transparent" data-series="saviia" data-label="SAVIIA" data-mes="2023" data-val="7.4 años (39 vendidas · 289 disp al inicio)" data-color="#ea580c"/><circle class="pt" cx="780.0" cy="238.8" r="4" fill="#ea580c" data-series="saviia" data-label="SAVIIA" data-mes="2024" data-val="4.5 años (55 vendidas · 250 disp al inicio)" data-color="#ea580c"/><circle class="hit" cx="780.0" cy="238.8" r="10" fill="transparent" data-series="saviia" data-label="SAVIIA" data-mes="2024" data-val="4.5 años (55 vendidas · 250 disp al inicio)" data-color="#ea580c"/><circle class="pt" cx="960.0" cy="253.1" r="4" fill="#ea580c" data-series="saviia" data-label="SAVIIA" data-mes="2025" data-val="2.5 años (79 vendidas · 195 disp al inicio)" data-color="#ea580c"/><circle class="hit" cx="960.0" cy="253.1" r="10" fill="transparent" data-series="saviia" data-label="SAVIIA" data-mes="2025" data-val="2.5 años (79 vendidas · 195 disp al inicio)" data-color="#ea580c"/><circle class="pt" cx="60.0" cy="197.8" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2020" data-val="10.5 años (425 vendidas · 4475 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="60.0" cy="197.8" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2020" data-val="10.5 años (425 vendidas · 4475 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="240.0" cy="220.2" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2021" data-val="7.3 años (558 vendidas · 4050 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="240.0" cy="220.2" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2021" data-val="7.3 años (558 vendidas · 4050 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="420.0" cy="233.4" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2022" data-val="5.3 años (654 vendidas · 3492 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="420.0" cy="233.4" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2022" data-val="5.3 años (654 vendidas · 3492 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="600.0" cy="217.8" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2023" data-val="7.6 años (373 vendidas · 2838 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="600.0" cy="217.8" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2023" data-val="7.6 años (373 vendidas · 2838 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="780.0" cy="221.6" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2024" data-val="7.1 años (349 vendidas · 2465 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="780.0" cy="221.6" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2024" data-val="7.1 años (349 vendidas · 2465 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="960.0" cy="242.8" r="4" fill="#8b5cf6" data-series="novis" data-label="NOVIS" data-mes="2025" data-val="4.0 años (534 vendidas · 2116 disp al inicio)" data-color="#8b5cf6"/><circle class="hit" cx="960.0" cy="242.8" r="10" fill="transparent" data-series="novis" data-label="NOVIS" data-mes="2025" data-val="4.0 años (534 vendidas · 2116 disp al inicio)" data-color="#8b5cf6"/><circle class="pt" cx="240.0" cy="177.0" r="4" fill="#3b82f6" data-series="vis" data-label="VIS" data-mes="2021" data-val="13.6 años (471 vendidas · 6389 disp al inicio)" data-color="#3b82f6"/><circle class="hit" cx="240.0" cy="177.0" r="10" fill="transparent" data-series="vis" data-label="VIS" data-mes="2021" data-val="13.6 años (471 vendidas · 6389 disp al inicio)" data-color="#3b82f6"/><circle class="pt" cx="420.0" cy="236.2" r="4" fill="#3b82f6" data-series="vis" data-label="VIS" data-mes="2022" data-val="4.9 años (1202 vendidas · 5918 disp al inicio)" data-color="#3b82f6"/><circle class="hit" cx="420.0" cy="236.2" r="10" fill="transparent" data-series="vis" data-label="VIS" data-mes="2022" data-val="4.9 años (1202 vendidas · 5918 disp al inicio)" data-color="#3b82f6"/><circle class="pt" cx="600.0" cy="223.1" r="4" fill="#3b82f6" data-series="vis" data-label="VIS" data-mes="2023" data-val="6.8 años (690 vendidas · 4716 disp al inicio)" data-color="#3b82f6"/><circle class="hit" cx="600.0" cy="223.1" r="10" fill="transparent" data-series="vis" data-label="VIS" data-mes="2023" data-val="6.8 años (690 vendidas · 4716 disp al inicio)" data-color="#3b82f6"/><circle class="pt" cx="780.0" cy="229.2" r="4" fill="#3b82f6" data-series="vis" data-label="VIS" data-mes="2024" data-val="5.9 años (677 vendidas · 4026 disp al inicio)" data-color="#3b82f6"/><circle class="hit" cx="780.0" cy="229.2" r="10" fill="transparent" data-series="vis" data-label="VIS" data-mes="2024" data-val="5.9 años (677 vendidas · 4026 disp al inicio)" data-color="#3b82f6"/><circle class="pt" cx="960.0" cy="246.4" r="4" fill="#3b82f6" data-series="vis" data-label="VIS" data-mes="2025" data-val="3.4 años (975 vendidas · 3349 disp al inicio)" data-color="#3b82f6"/><circle class="hit" cx="960.0" cy="246.4" r="10" fill="transparent" data-series="vis" data-label="VIS" data-mes="2025" data-val="3.4 años (975 vendidas · 3349 disp al inicio)" data-color="#3b82f6"/>
+</svg>
+<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>
+</div>
+    </div>
+
+    <table style="margin-top:14px">
+      <thead>
+        <tr>
+          <th>Año</th>
+          <th class="num col-saviia">Saviia disp inicio</th><th class="num col-saviia">Saviia ventas</th><th class="num col-saviia">Rotación años</th>
+          <th class="num col-novis">No-VIS disp inicio</th><th class="num col-novis">No-VIS ventas</th><th class="num col-novis">Rotación años</th>
+          <th class="num col-vis">VIS disp inicio</th><th class="num col-vis">VIS ventas</th><th class="num col-vis">Rotación años</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr><td><strong>2020</strong></td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-saviia"><strong>—</strong></td><td class="num col-novis">4475</td><td class="num col-novis">425</td><td class="num col-novis"><strong>10.5</strong></td><td class="num col-vis">—</td><td class="num col-vis">—</td><td class="num col-vis"><strong>—</strong></td></tr><tr><td><strong>2021</strong></td><td class="num col-saviia">418</td><td class="num col-saviia">13</td><td class="num col-saviia"><strong>32.2</strong></td><td class="num col-novis">4050</td><td class="num col-novis">558</td><td class="num col-novis"><strong>7.3</strong></td><td class="num col-vis">6389</td><td class="num col-vis">471</td><td class="num col-vis"><strong>13.6</strong></td></tr><tr><td><strong>2022</strong></td><td class="num col-saviia">405</td><td class="num col-saviia">116</td><td class="num col-saviia"><strong>3.5</strong></td><td class="num col-novis">3492</td><td class="num col-novis">654</td><td class="num col-novis"><strong>5.3</strong></td><td class="num col-vis">5918</td><td class="num col-vis">1202</td><td class="num col-vis"><strong>4.9</strong></td></tr><tr><td><strong>2023</strong></td><td class="num col-saviia">289</td><td class="num col-saviia">39</td><td class="num col-saviia"><strong>7.4</strong></td><td class="num col-novis">2838</td><td class="num col-novis">373</td><td class="num col-novis"><strong>7.6</strong></td><td class="num col-vis">4716</td><td class="num col-vis">690</td><td class="num col-vis"><strong>6.8</strong></td></tr><tr><td><strong>2024</strong></td><td class="num col-saviia">250</td><td class="num col-saviia">55</td><td class="num col-saviia"><strong>4.5</strong></td><td class="num col-novis">2465</td><td class="num col-novis">349</td><td class="num col-novis"><strong>7.1</strong></td><td class="num col-vis">4026</td><td class="num col-vis">677</td><td class="num col-vis"><strong>5.9</strong></td></tr><tr><td><strong>2025</strong></td><td class="num col-saviia">195</td><td class="num col-saviia">79</td><td class="num col-saviia"><strong>2.5</strong></td><td class="num col-novis">2116</td><td class="num col-novis">534</td><td class="num col-novis"><strong>4.0</strong></td><td class="num col-vis">3349</td><td class="num col-vis">975</td><td class="num col-vis"><strong>3.4</strong></td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">Rotación = disponibles al inicio del año / ventas del año. Los "disp inicio" se reconstruyen tomando el inventario total del segmento y restando las ventas acumuladas de años previos. <strong>Nota:</strong> la suma anual de ventas del trends (302 para Saviia) difiere levemente del total acumulado del maestro (275) — no inventamos datos, usamos lo que reporta cada fuente. La caída fuerte de rotación en 2025 refleja que ya queda poco inventario y las ventas siguen activas.</div>
+
   </div>
 
-  <!-- 4. RECOMENDACIÓN -->
+  <!-- 5. RECOMENDACIÓN -->
   <div class="section" style="border:2px solid var(--saviia)">
-    <h2 style="color:var(--saviia)">4 · ¿Duppla debe comprar?</h2>
+    <h2 style="color:var(--saviia)">5 · ¿A cuánto deberíamos pagar?</h2>
 
     <!-- Veredicto -->
     <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:20px;margin-bottom:18px">
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--saviia);font-weight:700">Veredicto</div>
-      <div style="font-size:28px;font-weight:800;color:var(--saviia);margin:6px 0">SÍ &mdash; pero negociar más</div>
-      <div style="font-size:13px;color:var(--text);line-height:1.6">El proyecto tiene señales mixtas:<br>
-        <strong style="color:#059669">A favor:</strong> ya colocó 65.8%, queda poco inventario (se agota en 2.2 años) y <strong>aceleró fuerte en 2025</strong> (absorbió 18.9% del inventario vs 11.9% del promedio No-VIS zonal).<br>
-        <strong style="color:#dc2626">En contra:</strong> nos cobran <strong>+31% por encima del precio justo</strong> y el crecimiento de precios se desaceleró a <strong>+7.3% en 2025</strong> (vs +15% en 2024). La ventana de revalorización se está cerrando.<br>
-        Hay que pedir más descuento — la tesis de inversión se sostiene solo si conseguimos −15% a −25% adicional sobre lo que ofrecen.</div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--saviia);font-weight:700">Respuesta corta</div>
+      <div style="font-size:24px;font-weight:800;color:var(--saviia);margin:6px 0">Apuntar a −19%, aspirar a −25%, no aceptar menos de −15%</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6">Saviia tiene fundamentos sólidos (65.8% colocado, queda poco inventario, aceleró en 2025), pero nos cobran <strong>+17.4% por encima del FMP No-VIS</strong> de áreas equivalentes (~$6,870 millones de sobreprecio absoluto). El descuento actual de −6.4% es insuficiente para una operación de $46.5 mil M. Abajo, los referentes de precio y los escenarios de negociación.</div>
+    </div>
+
+    <!-- REFERENTES DE PRECIO (solo No-VIS) -->
+    <h3>Referentes de precio · solo proyectos No-VIS en 2 km</h3>
+    <div class="kpi-grid" style="margin-bottom:14px">
+      <div class="kpi saviia">
+        <div class="kpi-label">Saviia nos cobra (negociado)</div>
+        <div class="kpi-value" style="font-size:22px">$5,572,108</div>
+        <div class="kpi-pct">por m² · −6.4% sobre lista</div>
+        <div class="kpi-detail">$46.48 mil M total</div>
+      </div>
+      <div class="kpi novis">
+        <div class="kpi-label">Promedio No-VIS zona 2025</div>
+        <div class="kpi-value" style="font-size:22px">$4,824,101</div>
+        <div class="kpi-pct">por m² · referente principal</div>
+        <div class="kpi-detail">11 proyectos No-VIS · ponderado por ventas</div>
+      </div>
+      <div class="kpi accent">
+        <div class="kpi-label">FMP tipológico No-VIS 2025</div>
+        <div class="kpi-value" style="font-size:22px">$4,745,378</div>
+        <div class="kpi-pct">por m² · áreas equivalentes</div>
+        <div class="kpi-detail">Promedio ponderado por ventas 2025 · ±7 m² de las áreas ofrecidas</div>
+      </div>
     </div>
 
     <!-- FMP CLARO -->
-    <h3>Precio justo de mercado (FMP) vs lo que nos cobran</h3>
+    <h3>Sobreprecio por tipología · solo comparables No-VIS (trends ponderado 2025)</h3>
     <table>
       <thead>
         <tr>
           <th>Tipología</th>
           <th class="num">Cantidad</th>
-          <th class="num">FMP zona /m²<br><span style="font-weight:400;text-transform:none">(precio justo)</span></th>
+          <th class="num">FMP No-VIS /m²<br><span style="font-weight:400;text-transform:none">(ponderado por ventas 2025 · ±7 m²)</span></th>
           <th class="num">Nos cobran /m²<br><span style="font-weight:400;text-transform:none">(precio negociado)</span></th>
           <th class="num">Sobreprecio</th>
         </tr>
@@ -348,37 +430,37 @@
         <tr>
           <td><strong>Tipo C</strong> &mdash; 63.7 m²</td>
           <td class="num">48</td>
-          <td class="num" style="color:#059669">$4,226,069</td>
+          <td class="num" style="color:#059669">$4,731,175</td>
           <td class="num" style="color:#dc2626">$5,649,295</td>
-          <td class="num" style="color:#dc2626;font-weight:700">+33.7%</td>
+          <td class="num" style="color:#dc2626;font-weight:700">+19.4%</td>
         </tr>
         <tr>
           <td><strong>Tipo B</strong> &mdash; 70.5 m²</td>
           <td class="num">14</td>
-          <td class="num" style="color:#059669">$4,592,971</td>
+          <td class="num" style="color:#059669">$4,642,915</td>
           <td class="num" style="color:#dc2626">$5,059,844</td>
-          <td class="num" style="color:var(--warn);font-weight:700">+10.2%</td>
+          <td class="num" style="color:var(--warn);font-weight:700">+9.0%</td>
         </tr>
         <tr>
           <td><strong>Tipo E</strong> &mdash; 74.1 m²</td>
           <td class="num">58</td>
-          <td class="num" style="color:#059669">$4,173,331</td>
+          <td class="num" style="color:#059669">$4,779,013</td>
           <td class="num" style="color:#dc2626">$5,629,286</td>
-          <td class="num" style="color:#dc2626;font-weight:700">+34.9%</td>
+          <td class="num" style="color:#dc2626;font-weight:700">+17.8%</td>
         </tr>
         <tr class="total">
           <td>TOTAL (120 apts)</td>
           <td class="num">120</td>
-          <td class="num" style="color:#059669">$4,242,308</td>
+          <td class="num" style="color:#059669">$4,745,378</td>
           <td class="num" style="color:#dc2626">$5,569,248</td>
-          <td class="num" style="color:#dc2626">+31.3%</td>
+          <td class="num" style="color:#dc2626">+17.4%</td>
         </tr>
       </tbody>
     </table>
     <p style="font-size:13px;color:var(--text);margin-top:12px;background:#fef3c7;padding:14px;border-radius:6px;border-left:4px solid var(--warn);line-height:1.6">
-      <strong>En plata:</strong> estamos pagando <strong>~$11,070 millones de más</strong> de lo que valen estos apartamentos según el mercado de la zona.<br>
-      <strong>Tipo B</strong> (14 apts · $5.0M) está al nivel del mercado (+10%) — sería la única tipología comprable al precio actual.<br>
-      <strong>Tipo C y Tipo E</strong> (106 apts · $42M · <strong>88% de la inversión</strong>) nos los cobran +33.7% y +34.9% respectivamente. <strong>El problema está acá</strong> — ahí es donde hay que apretar la negociación.
+      <strong>En plata:</strong> contra el mercado No-VIS 2025 de áreas equivalentes, estamos pagando <strong>~$6,870 millones de más</strong>.<br>
+      <strong>Tipo B</strong> (14 apts · $5.0M) está prácticamente al precio justo (+9%) — comprable tal cual.<br>
+      <strong>Tipo C y Tipo E</strong> (106 apts · $42M · <strong>89% de la inversión</strong>) nos los cobran +19.4% y +17.8% respectivamente. <strong>Ahí es donde hay que apretar la negociación.</strong>
     </p>
 
     <!-- ARGUMENTOS RESUMIDOS -->
@@ -397,7 +479,7 @@
       <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:14px">
         <div style="font-weight:700;color:#dc2626;margin-bottom:8px">En contra</div>
         <ul style="margin-left:18px;font-size:13px;line-height:1.8">
-          <li>Nos cobran <strong>+31% sobre el precio justo</strong> de la zona — el gap es consistente incluso comparando solo contra proyectos No-VIS (+30.7%)</li>
+          <li>Nos cobran <strong>+17.4% sobre el FMP No-VIS</strong> de áreas equivalentes (~$6,870M de sobreprecio absoluto sobre 8,342 m²)</li>
           <li>Es el <strong>proyecto más caro</strong> de los 21 en 2 km</li>
           <li><strong>Crecimiento de precios se desaceleró:</strong> de +15% en 2024 a <strong>+7.3% en 2025</strong> · la ventana de revalorización se está cerrando</li>
           <li>Descuento actual de solo <strong>-6.4%</strong>, muy bajo para el tamaño</li>
@@ -406,22 +488,31 @@
       </div>
     </div>
 
-    <!-- NEGOCIACIÓN -->
-    <h3>¿Cuánto deberíamos pagar?</h3>
+    <!-- ESCENARIOS -->
+    <h3>Escenarios de precio · ¿a qué nivel nos conviene cerrar?</h3>
     <table>
-      <thead><tr><th>Si negociamos…</th><th class="num">Precio /m²</th><th class="num">Inversión 120 apts</th><th>Veredicto</th></tr></thead>
+      <thead><tr><th>Escenario</th><th class="num">Precio /m²</th><th class="num">Inversión 120 apts</th><th class="num">vs lista</th><th>Veredicto</th></tr></thead>
       <tbody>
-        <tr style="background:#fff7ed;font-weight:600"><td><strong>Lo que ofrecen ahora (-6.4%)</strong></td><td class="num">$5,572,108</td><td class="num">$46.55 mil M</td><td><span style="color:var(--warn);font-weight:600">Marginal · Negociar más</span></td></tr>
-        <tr><td>-15% sobre lista</td><td class="num">$5,061,970</td><td class="num">$42.3 mil M</td><td><span style="color:#059669;font-weight:600">Bueno · Recomendado</span></td></tr>
-        <tr><td>-25% sobre lista</td><td class="num">$4,466,444</td><td class="num">$37.3 mil M</td><td><span style="color:#059669;font-weight:600">Excelente · Objetivo ideal</span></td></tr>
-        <tr><td>-29% sobre lista (= FMP zona)</td><td class="num">$4,242,308</td><td class="num">$35.4 mil M</td><td><span style="color:#059669;font-weight:600">Pagaríamos el precio justo</span></td></tr>
+        <tr><td>Precio lista (tope)</td><td class="num">$5,955,259</td><td class="num">$49.68 mil M</td><td class="num">0%</td><td><span style="color:#dc2626;font-weight:600">No pagar · sobreprecio absurdo</span></td></tr>
+        <tr style="background:#fff7ed"><td><strong>Negociado actual (oferta de Tecnourbana)</strong></td><td class="num">$5,572,108</td><td class="num">$46.48 mil M</td><td class="num">−6.4%</td><td><span style="color:var(--warn);font-weight:600">Marginal · negociar más</span></td></tr>
+        <tr><td>Al nivel del No-VIS más caro de zona (San Mateo)</td><td class="num">$5,575,017</td><td class="num">$46.51 mil M</td><td class="num">−6.4%</td><td><span style="color:var(--warn);font-weight:600">Mismo problema · no mejora</span></td></tr>
+        <tr style="background:#ecfdf5"><td><strong>Al FMP del mercado No-VIS 2025 (principal)</strong></td><td class="num">$4,824,101</td><td class="num">$40.24 mil M</td><td class="num">−19.0%</td><td><span style="color:#059669;font-weight:700">Razonable · apuntar acá</span></td></tr>
+        <tr><td>Mediana No-VIS zona</td><td class="num">$4,854,659</td><td class="num">$40.50 mil M</td><td class="num">−18.5%</td><td><span style="color:#059669;font-weight:600">Equivalente al anterior</span></td></tr>
+        <tr style="background:#ecfdf5"><td><strong>Al FMP tipológico No-VIS (áreas equivalentes)</strong></td><td class="num">$4,745,378</td><td class="num">$39.59 mil M</td><td class="num">−20.3%</td><td><span style="color:#059669;font-weight:700">Ideal · FMP ajustado por tipología</span></td></tr>
       </tbody>
     </table>
+    <p style="font-size:13px;color:var(--text);margin-top:12px;background:#ecfdf5;padding:14px;border-radius:6px;border-left:4px solid #059669;line-height:1.6">
+      <strong>Recomendación de precio:</strong><br>
+      • <strong>Piso de aceptación: −15%</strong> sobre lista ($5.06M/m² · $42.2 mil M) — solo si hay condiciones adicionales (plazos, garantías, flexibilidad en mix).<br>
+      • <strong>Objetivo principal: −19% a −20%</strong> sobre lista ($4.75M–$4.82M/m² · $39.6–$40.2 mil M) — pagar al FMP No-VIS (promedio general o por tipología, ambos convergen).<br>
+      • <strong>Objetivo ambicioso: −25%</strong> sobre lista ($4.47M/m² · $37.3 mil M) — margen adicional como precio de inversionista institucional.<br>
+      No aceptar nada por encima de −15%.
+    </p>
   </div>
 
-  <!-- 5. METODOLOGÍA -->
+  <!-- 6. METODOLOGÍA -->
   <div class="section">
-    <h2>5 · Metodología</h2>
+    <h2>6 · Metodología</h2>
     <div class="h-sub">¿De dónde sale cada dato y cómo se calculó.</div>
 
     <h3>Fuentes de datos · BigQuery</h3>
@@ -429,9 +520,9 @@
       <thead><tr><th>Tabla</th><th>Qué contiene</th><th>Sección donde se usa</th></tr></thead>
       <tbody>
         <tr><td><code>lgi.bogota_def_Def_12-25_proyectos</code></td><td>Maestro de proyectos: tamaño, tipo VIS/No-VIS, fechas, lat/lng</td><td>Sección 1</td></tr>
-        <tr><td><code>lgi.bogota_def_Def_12-25_detalle</code></td><td>Inmuebles por proyecto: tipología, área, total y disponibles</td><td>Sección 1, 4</td></tr>
-        <tr><td><code>lgi.bogota_def_Def_12-25_trends</code></td><td>Histórico mensual de ventas y precio m² por proyecto y tipología</td><td>Sección 2, 3</td></tr>
-        <tr><td><code>eval_inmuebles.comportamiento_vivienda_nueva</code></td><td>Vista consolidada con coordenadas y métricas de ritmo y rotación</td><td>Sección 2, 3, 4</td></tr>
+        <tr><td><code>lgi.bogota_def_Def_12-25_detalle</code></td><td>Inmuebles por proyecto: tipología, área, total y disponibles</td><td>Sección 1, 5</td></tr>
+        <tr><td><code>lgi.bogota_def_Def_12-25_trends</code></td><td>Histórico mensual de ventas y precio m² por proyecto y tipología</td><td>Sección 3, 4</td></tr>
+        <tr><td><code>eval_inmuebles.comportamiento_vivienda_nueva</code></td><td>Vista consolidada con coordenadas y métricas de ritmo y rotación</td><td>Sección 2, 3, 4, 5</td></tr>
       </tbody>
     </table>
 
@@ -515,6 +606,96 @@
       });
     });
   });
+})();
+</script>
+
+
+<script>
+(function initMapaProyectos(){
+  if (typeof L === 'undefined' || !document.getElementById('mapa-proyectos')) return;
+
+  const map = L.map('mapa-proyectos').setView([PROYECTO_FOCAL.lat, PROYECTO_FOCAL.lng], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  const fmt = n => '$' + n.toLocaleString('es-CO', {maximumFractionDigits: 0});
+  const fmtPct = (n,d) => d > 0 ? ((n/d)*100).toFixed(1)+'%' : '—';
+
+  // Círculo del radio 2km
+  L.circle([PROYECTO_FOCAL.lat, PROYECTO_FOCAL.lng], {
+    radius: 2000,
+    color: '#ea580c',
+    weight: 1.5,
+    dashArray: '6 6',
+    fillOpacity: 0.05,
+    fillColor: '#ea580c'
+  }).addTo(map);
+
+  // Popup builder
+  function popup(p, esFocal) {
+    const pct = fmtPct(p.vend, p.inv);
+    const tipo = p.vis_novis === 'Vis' ? 'VIS' : 'No-VIS';
+    const header = esFocal
+      ? '<div style="font-weight:700;color:#ea580c;font-size:14px">★ '+p.nombre+'</div>'
+      : '<div style="font-weight:700;color:#1e3a5f;font-size:14px">'+p.nombre+'</div>';
+    return header +
+      '<div style="font-size:11px;color:#64748b;margin-bottom:6px">'+p.vendedor+' · '+tipo+'</div>' +
+      '<table style="font-size:12px;border-collapse:collapse">' +
+      '<tr><td style="padding:2px 8px 2px 0">Inventario</td><td style="padding:2px 0;font-weight:600">'+p.inv+'</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Vendidas</td><td style="padding:2px 0;font-weight:600">'+p.vend+' ('+pct+')</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Disponibles</td><td style="padding:2px 0;font-weight:600">'+p.disp+'</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Precio m²</td><td style="padding:2px 0;font-weight:600">'+fmt(p.precio)+'</td></tr>' +
+      (esFocal ? '' : '<tr><td style="padding:2px 8px 2px 0">Distancia</td><td style="padding:2px 0;font-weight:600">'+p.dist+' m</td></tr>') +
+      '</table>';
+  }
+
+  // Marcador focal (Saviia)
+  const focalMarker = L.circleMarker([PROYECTO_FOCAL.lat, PROYECTO_FOCAL.lng], {
+    radius: 14,
+    fillColor: '#ea580c',
+    color: 'white',
+    weight: 3,
+    fillOpacity: 0.95
+  }).addTo(map)
+    .bindPopup(popup(PROYECTO_FOCAL, true))
+    .bindTooltip('<strong>'+PROYECTO_FOCAL.nombre+'</strong>', {direction:'top', offset:[0,-12]});
+
+  // Competidores: tamaño ~ raíz del inventario
+  const markersNovis = [], markersVis = [];
+  COMPETIDORES.forEach(p => {
+    const esVis = p.vis_novis === 'Vis';
+    const radius = Math.max(5, Math.min(12, Math.sqrt(p.inv) / 3));
+    const m = L.circleMarker([p.lat, p.lng], {
+      radius: radius,
+      fillColor: esVis ? '#3b82f6' : '#8b5cf6',
+      color: 'white',
+      weight: 2,
+      fillOpacity: 0.85
+    }).addTo(map)
+      .bindPopup(popup(p, false))
+      .bindTooltip(p.nombre, {direction:'top', offset:[0,-6]});
+    (esVis ? markersVis : markersNovis).push(m);
+  });
+
+  // Handler de filtros
+  const bar = document.querySelector('.filters-bar[data-chart="mapa"]');
+  if (bar) {
+    bar.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const target = cb.getAttribute('data-s');
+        if (target === 'focal') {
+          if (cb.checked) focalMarker.addTo(map); else map.removeLayer(focalMarker);
+        } else if (target === 'novis') {
+          markersNovis.forEach(m => cb.checked ? m.addTo(map) : map.removeLayer(m));
+        } else if (target === 'vis') {
+          markersVis.forEach(m => cb.checked ? m.addTo(map) : map.removeLayer(m));
+        }
+      });
+    });
+  }
 })();
 </script>
 
