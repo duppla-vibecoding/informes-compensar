@@ -14,6 +14,9 @@
   body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
   .container{max-width:1200px;margin:0 auto;padding:24px}
   .header{background:linear-gradient(135deg,var(--navy),#2c4a73);color:white;border-radius:12px;padding:28px 32px;margin-bottom:20px}
+
+  #proyecto-selector option{background:var(--navy);color:white}
+  #proyecto-selector:focus{outline:2px solid rgba(255,255,255,0.4);outline-offset:1px}
   .header h1{font-size:26px;font-weight:700;margin-bottom:6px}
   .header .sub{font-size:13px;opacity:0.85}
   .section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:18px}
@@ -56,6 +59,15 @@
   .filter-chip.novis input:checked ~ .dot{background:#8b5cf6}
   .filter-chip.vis input:checked ~ .dot{background:#3b82f6}
   .filter-chip:has(input:not(:checked)){opacity:0.55}
+
+
+  .chart-split{display:grid;grid-template-columns:1fr;gap:22px}
+  .chart-col{min-width:0}
+  .chart-col-title{font-size:12px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;text-align:center;padding-top:6px}
+  .chart-tabs{display:flex;gap:4px;margin:14px 0 6px;border-bottom:1px solid var(--border)}
+  .chart-tab{background:transparent;border:none;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit;user-select:none}
+  .chart-tab:hover{color:var(--text);background:#f8fafc}
+  .chart-tab.active{color:var(--saviia);border-bottom-color:var(--saviia)}
   .chart-host.hide-saviia [data-series="saviia"]{display:none}
   .chart-host.hide-novis [data-series="novis"]{display:none}
   .chart-host.hide-vis [data-series="vis"]{display:none}
@@ -75,46 +87,68 @@
 <div class="container">
 
   <div class="header">
-    <h1>Saviia &mdash; Análisis Inversión Estratégica</h1>
-    <div class="sub">Tecnourbana · Zipaquirá Sabana Norte · Estrato 4 · No-VIS · 120 apartamentos ofrecidos</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:280px">
+        <h1 data-field="header_titulo">Saviia &mdash; Análisis Inversión Estratégica</h1>
+        <div class="sub" data-field="header_sub">Tecnourbana · Zipaquirá Sabana Norte · Estrato 4 · No-VIS · 120 apartamentos ofrecidos</div>
+      </div>
+      <div style="min-width:260px">
+        <label style="display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;opacity:0.75;margin-bottom:4px;color:white">Proyecto</label>
+        <select id="proyecto-selector" style="width:100%;padding:10px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.12);color:white;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;backdrop-filter:blur(4px)">
+        <option value="saviia">Saviia</option>
+        <option value="cedromonti">Cedromonti</option>
+        <option value="galicia">Torres de Galicia</option>
+        <option value="nqs67">NQS 67</option>
+        <option value="tyba">Tyba Reservado</option>
+        <option value="altamorada">Altamorada II</option>
+        <option value="montecielo">Montecielo</option>
+        <option value="turpiales">Turpiales de Cantoval</option>
+        <option value="tinguas">Tinguas de Cantoval</option>
+        <option value="porto13">Porto 13</option>
+        <option value="laurel">Bosques de la Calera - Laurel</option>
+        <option value="maui68">Maui 68</option>
+        <option value="suram308">Suramérica Apto 308</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <!-- 1. TAMAÑO Y PARTICIPACIÓN -->
-  <div class="section">
+  <div class="section" id="sec1">
     <h2>1 · Tamaño del conjunto y participación de Duppla</h2>
     <div class="h-sub">Composición del proyecto Saviia y porción que nos están ofreciendo.</div>
 
     <div class="kpi-grid">
       <div class="kpi">
         <div class="kpi-label">Total apartamentos</div>
-        <div class="kpi-value">418</div>
+        <div class="kpi-value" data-field="total_apts">418</div>
         <div class="kpi-pct">100% del proyecto</div>
-        <div class="kpi-detail">en 4 tipologías</div>
+        <div class="kpi-detail" data-field="total_detail">en 4 tipologías</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">Vendidos</div>
-        <div class="kpi-value">275</div>
-        <div class="kpi-pct">65.8% del proyecto</div>
+        <div class="kpi-value" data-field="vendidos">275</div>
+        <div class="kpi-pct" data-field="vendidos_pct">65.8% del proyecto</div>
         <div class="kpi-detail">colocados por la constructora</div>
       </div>
       <div class="kpi accent">
         <div class="kpi-label">Disponibles</div>
-        <div class="kpi-value">143</div>
-        <div class="kpi-pct">34.2% del proyecto</div>
+        <div class="kpi-value" data-field="disponibles">143</div>
+        <div class="kpi-pct" data-field="disp_pct">34.2% del proyecto</div>
         <div class="kpi-detail">en inventario</div>
       </div>
       <div class="kpi saviia">
         <div class="kpi-label">Ofrecidos a Duppla</div>
-        <div class="kpi-value">120</div>
-        <div class="kpi-pct">28.7% del proyecto · 83.9% del disponible</div>
-        <div class="kpi-detail">en 3 tipologías</div>
+        <div class="kpi-value" data-field="ofrecidos">120</div>
+        <div class="kpi-pct" data-field="ofrecidos_pct">28.7% del proyecto · 83.9% del disponible</div>
+        <div class="kpi-detail" data-field="ofrecidos_detail">en 3 tipologías</div>
       </div>
     </div>
   </div>
 
   
   <!-- 2. MAPA DE COMPETIDORES -->
-  <div class="section">
+  <div class="section" id="sec2">
     <h2>2 · Mapa de competidores · radio 2 km</h2>
     <div class="h-sub">Ubicación de Saviia (rojo) y los 20 proyectos competidores (azul) en el radio de análisis. Pasá el mouse o clickeá cada punto para ver detalles del proyecto.</div>
 
@@ -136,45 +170,29 @@
   </div>
 
 <!-- 3. HISTÓRICO ZONA DESAGREGADO -->
-  <div class="section">
+  <div class="section" id="sec3">
     <h2>3 · Histórico precio en radio 2 km · 5 años · desagregado</h2>
     <div class="h-sub">Precio promedio mensual ponderado por segmento. Saviia (nuestro proyecto) vs No-VIS zona (11 proyectos) vs VIS zona (9 proyectos).</div>
 
     <h3>Resumen anual</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Año</th>
-          <th class="num col-saviia">Saviia $/m²</th><th class="num col-saviia">var %</th>
-          <th class="num col-novis">No-VIS zona $/m²</th><th class="num col-novis">var %</th>
-          <th class="num col-vis">VIS zona $/m²</th><th class="num col-vis">var %</th>
-          <th class="num">Saviia vs No-VIS</th>
-          <th class="num">Saviia vs VIS</th>
-          <th class="num">No-VIS vs VIS</th>
-        </tr>
-      </thead>
-      <tbody>
-<tr><td><strong>2021</strong></td><td class="num col-saviia">$3,830,247</td><td class="num col-saviia">—</td><td class="num col-novis">$3,276,994</td><td class="num col-novis">—</td><td class="num col-vis">$3,088,323</td><td class="num col-vis">—</td><td class="num delta-warn">+16.9%</td><td class="num delta-warn">+24.0%</td><td class="num" style="color:var(--novis);font-weight:600">+6.1%</td></tr>
-<tr><td><strong>2022</strong></td><td class="num col-saviia">$3,906,869</td><td class="num col-saviia"><span class="delta-pos">+2.0%</span></td><td class="num col-novis">$3,718,217</td><td class="num col-novis"><span class="delta-pos">+13.5%</span></td><td class="num col-vis">$3,202,910</td><td class="num col-vis"><span class="delta-pos">+3.7%</span></td><td class="num delta-warn">+5.1%</td><td class="num delta-warn">+22.0%</td><td class="num" style="color:var(--novis);font-weight:600">+16.1%</td></tr>
-<tr><td><strong>2023</strong></td><td class="num col-saviia">$4,447,857</td><td class="num col-saviia"><span class="delta-pos">+13.8%</span></td><td class="num col-novis">$4,228,492</td><td class="num col-novis"><span class="delta-pos">+13.7%</span></td><td class="num col-vis">$3,672,786</td><td class="num col-vis"><span class="delta-pos">+14.7%</span></td><td class="num delta-warn">+5.2%</td><td class="num delta-warn">+21.1%</td><td class="num" style="color:var(--novis);font-weight:600">+15.1%</td></tr>
-<tr><td><strong>2024</strong></td><td class="num col-saviia">$5,120,057</td><td class="num col-saviia"><span class="delta-pos">+15.1%</span></td><td class="num col-novis">$4,539,611</td><td class="num col-novis"><span class="delta-pos">+7.4%</span></td><td class="num col-vis">$4,107,800</td><td class="num col-vis"><span class="delta-pos">+11.8%</span></td><td class="num delta-warn">+12.8%</td><td class="num delta-warn">+24.6%</td><td class="num" style="color:var(--novis);font-weight:600">+10.5%</td></tr>
-<tr><td><strong>2025</strong></td><td class="num col-saviia">$5,492,662</td><td class="num col-saviia"><span class="delta-pos">+7.3%</span></td><td class="num col-novis">$4,824,101</td><td class="num col-novis"><span class="delta-pos">+6.3%</span></td><td class="num col-vis">$4,304,777</td><td class="num col-vis"><span class="delta-pos">+4.8%</span></td><td class="num delta-warn">+13.9%</td><td class="num delta-warn">+27.6%</td><td class="num" style="color:var(--novis);font-weight:600">+12.1%</td></tr>
-<tr class="year-summary"><td>Crecimiento 2021→2025</td><td class="num col-saviia">$1,662,415</td><td class="num col-saviia">+43.4%</td><td class="num col-novis">$1,547,107</td><td class="num col-novis">+47.2%</td><td class="num col-vis">$1,216,454</td><td class="num col-vis">+39.4%</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
-
-      </tbody>
+    <table id="sec3-resumen-tabla">
+      <thead id="sec3-resumen-thead"></thead>
+      <tbody id="sec3-resumen-tbody"></tbody>
     </table>
-    <div style="font-size:12px;color:var(--muted);margin-top:8px">Columnas de deltas: <strong>Saviia vs No-VIS</strong> y <strong>Saviia vs VIS</strong> (naranja) muestran cuánto más caro está Saviia respecto al promedio de zona. <strong>No-VIS vs VIS</strong> (morado) muestra cuánto más caro está No-VIS respecto a VIS — el gap natural entre segmentos.</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">Las 3 columnas de deltas usan la fórmula <code>(mayor − menor) / mayor</code> (gap como porcentaje del precio superior). <strong>Saviia vs No-VIS</strong> y <strong>Saviia vs VIS</strong> (naranja) = cuánto más caro está Saviia sobre la zona. <strong>No-VIS vs VIS</strong> (morado) = cuánto más caro está No-VIS sobre VIS — el gap natural entre segmentos.</div>
 
     <h3>Evolución mensual · gráfica</h3>
-    
-    <div class="filters-bar" data-chart="sec2">
+<div class="filters-bar" data-chart="sec2">
       <span class="filters-label">Mostrar:</span>
       <label class="filter-chip saviia"><input type="checkbox" data-s="saviia" checked><span class="dot"></span>Saviia</label>
       <label class="filter-chip novis"><input type="checkbox" data-s="novis" checked><span class="dot"></span>No-VIS zona</label>
       <label class="filter-chip vis"><input type="checkbox" data-s="vis" checked><span class="dot"></span>VIS zona</label>
     </div>
     <div class="chart-wrap">
-<div class="chart-host" style="position:relative">
+<div class="chart-split">
+<div class="chart-col">
+<div class="chart-col-title">Precios $/m² (mensual)</div>
+<div class="chart-host" id="sec3-chart-precios" data-chart-tab="precios" style="position:relative">
 <svg class="chart" viewBox="0 0 1080 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
   <rect x="70" y="30" width="990" height="260" fill="#fafbfc" stroke="#e2e8f0"/>
   <line x1="70" y1="274.2" x2="1060" y2="274.2" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="234.8" x2="1060" y2="234.8" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="195.5" x2="1060" y2="195.5" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="156.1" x2="1060" y2="156.1" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="116.7" x2="1060" y2="116.7" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="77.3" x2="1060" y2="77.3" stroke="#e2e8f0" stroke-width="1"/><line x1="70" y1="37.9" x2="1060" y2="37.9" stroke="#e2e8f0" stroke-width="1"/>
@@ -199,14 +217,46 @@
 <div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>
 <div style="font-size:11px;color:var(--muted);margin-top:8px">Pasá el mouse sobre cualquier punto para ver el valor exacto. Línea punteada naranja = meses sin ventas en Saviia.</div>
 </div>
-    </div>
+</div>
+<div class="chart-col">
+<div class="chart-col-title">Gap % (anual)</div>
+<div class="chart-host" id="sec3-chart-gap" data-chart-tab="gap" style="position:relative">
+<svg viewBox="0 0 1080 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
+  <rect x="70" y="30" width="990" height="260" fill="#fafbfc" stroke="#e2e8f0"/>
+  <line x1="70" y1="290.0" x2="1060" y2="290.0" stroke="#e2e8f0"/><line x1="70" y1="238.0" x2="1060" y2="238.0" stroke="#e2e8f0"/><line x1="70" y1="186.0" x2="1060" y2="186.0" stroke="#e2e8f0"/><line x1="70" y1="134.0" x2="1060" y2="134.0" stroke="#e2e8f0"/><line x1="70" y1="82.0" x2="1060" y2="82.0" stroke="#e2e8f0"/><line x1="70" y1="30.0" x2="1060" y2="30.0" stroke="#e2e8f0"/>
+  <text x="64" y="293.0" text-anchor="end" font-size="10" fill="#64748b">0%</text><text x="64" y="241.0" text-anchor="end" font-size="10" fill="#64748b">5%</text><text x="64" y="189.0" text-anchor="end" font-size="10" fill="#64748b">10%</text><text x="64" y="137.0" text-anchor="end" font-size="10" fill="#64748b">15%</text><text x="64" y="85.0" text-anchor="end" font-size="10" fill="#64748b">20%</text><text x="64" y="33.0" text-anchor="end" font-size="10" fill="#64748b">25%</text>
+  <text x="70.0" y="306" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2021</text><text x="317.5" y="306" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2022</text><text x="565.0" y="306" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2023</text><text x="812.5" y="306" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2024</text><text x="1060.0" y="306" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">2025</text>
+  <path d="M70.0,140.2L317.5,240.1L565.0,239.0L812.5,172.5L1060.0,163.1" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linejoin="round" data-series="sav_nov"/>
+  <path d="M70.0,88.2L317.5,102.8L565.0,109.0L812.5,84.1L1060.0,65.4" fill="none" stroke="#9a3412" stroke-width="2.5" stroke-linejoin="round" data-series="sav_vis"/>
+  <path d="M70.0,229.7L317.5,145.4L565.0,153.8L812.5,191.2L1060.0,177.7" fill="none" stroke="#8b5cf6" stroke-width="2.5" stroke-linejoin="round" data-series="nov_vis"/>
+  <circle class="pt" cx="70.0" cy="140.2" r="4" fill="#ea580c" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2021" data-val="+14.4%" data-color="#ea580c"/><circle class="hit" cx="70.0" cy="140.2" r="10" fill="transparent" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2021" data-val="+14.4%" data-color="#ea580c"/><circle class="pt" cx="317.5" cy="240.1" r="4" fill="#ea580c" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2022" data-val="+4.8%" data-color="#ea580c"/><circle class="hit" cx="317.5" cy="240.1" r="10" fill="transparent" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2022" data-val="+4.8%" data-color="#ea580c"/><circle class="pt" cx="565.0" cy="239.0" r="4" fill="#ea580c" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2023" data-val="+4.9%" data-color="#ea580c"/><circle class="hit" cx="565.0" cy="239.0" r="10" fill="transparent" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2023" data-val="+4.9%" data-color="#ea580c"/><circle class="pt" cx="812.5" cy="172.5" r="4" fill="#ea580c" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2024" data-val="+11.3%" data-color="#ea580c"/><circle class="hit" cx="812.5" cy="172.5" r="10" fill="transparent" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2024" data-val="+11.3%" data-color="#ea580c"/><circle class="pt" cx="1060.0" cy="163.1" r="4" fill="#ea580c" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2025" data-val="+12.2%" data-color="#ea580c"/><circle class="hit" cx="1060.0" cy="163.1" r="10" fill="transparent" data-series="sav_nov" data-label="Saviia vs No-VIS" data-mes="2025" data-val="+12.2%" data-color="#ea580c"/>
+  <circle class="pt" cx="70.0" cy="88.2" r="4" fill="#9a3412" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2021" data-val="+19.4%" data-color="#9a3412"/><circle class="hit" cx="70.0" cy="88.2" r="10" fill="transparent" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2021" data-val="+19.4%" data-color="#9a3412"/><circle class="pt" cx="317.5" cy="102.8" r="4" fill="#9a3412" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2022" data-val="+18.0%" data-color="#9a3412"/><circle class="hit" cx="317.5" cy="102.8" r="10" fill="transparent" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2022" data-val="+18.0%" data-color="#9a3412"/><circle class="pt" cx="565.0" cy="109.0" r="4" fill="#9a3412" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2023" data-val="+17.4%" data-color="#9a3412"/><circle class="hit" cx="565.0" cy="109.0" r="10" fill="transparent" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2023" data-val="+17.4%" data-color="#9a3412"/><circle class="pt" cx="812.5" cy="84.1" r="4" fill="#9a3412" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2024" data-val="+19.8%" data-color="#9a3412"/><circle class="hit" cx="812.5" cy="84.1" r="10" fill="transparent" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2024" data-val="+19.8%" data-color="#9a3412"/><circle class="pt" cx="1060.0" cy="65.4" r="4" fill="#9a3412" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2025" data-val="+21.6%" data-color="#9a3412"/><circle class="hit" cx="1060.0" cy="65.4" r="10" fill="transparent" data-series="sav_vis" data-label="Saviia vs VIS" data-mes="2025" data-val="+21.6%" data-color="#9a3412"/>
+  <circle class="pt" cx="70.0" cy="229.7" r="4" fill="#8b5cf6" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2021" data-val="+5.8%" data-color="#8b5cf6"/><circle class="hit" cx="70.0" cy="229.7" r="10" fill="transparent" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2021" data-val="+5.8%" data-color="#8b5cf6"/><circle class="pt" cx="317.5" cy="145.4" r="4" fill="#8b5cf6" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2022" data-val="+13.9%" data-color="#8b5cf6"/><circle class="hit" cx="317.5" cy="145.4" r="10" fill="transparent" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2022" data-val="+13.9%" data-color="#8b5cf6"/><circle class="pt" cx="565.0" cy="153.8" r="4" fill="#8b5cf6" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2023" data-val="+13.1%" data-color="#8b5cf6"/><circle class="hit" cx="565.0" cy="153.8" r="10" fill="transparent" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2023" data-val="+13.1%" data-color="#8b5cf6"/><circle class="pt" cx="812.5" cy="191.2" r="4" fill="#8b5cf6" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2024" data-val="+9.5%" data-color="#8b5cf6"/><circle class="hit" cx="812.5" cy="191.2" r="10" fill="transparent" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2024" data-val="+9.5%" data-color="#8b5cf6"/><circle class="pt" cx="1060.0" cy="177.7" r="4" fill="#8b5cf6" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2025" data-val="+10.8%" data-color="#8b5cf6"/><circle class="hit" cx="1060.0" cy="177.7" r="10" fill="transparent" data-series="nov_vis" data-label="No-VIS vs VIS" data-mes="2025" data-val="+10.8%" data-color="#8b5cf6"/>
+  <g transform="translate(80,38)" font-size="11" font-family="Inter,sans-serif">
+    <rect x="-4" y="-4" width="220" height="68" fill="white" stroke="#e2e8f0" rx="4"/>
+    <line x1="4" y1="8" x2="24" y2="8" stroke="#ea580c" stroke-width="2.5"/>
+    <circle cx="14" cy="8" r="3" fill="#ea580c"/>
+    <text x="30" y="11" fill="#0f172a" font-weight="600">Saviia vs No-VIS</text>
+    <line x1="4" y1="24" x2="24" y2="24" stroke="#9a3412" stroke-width="2.5"/>
+    <circle cx="14" cy="24" r="3" fill="#9a3412"/>
+    <text x="30" y="27" fill="#0f172a" font-weight="600">Saviia vs VIS</text>
+    <line x1="4" y1="40" x2="24" y2="40" stroke="#8b5cf6" stroke-width="2.5"/>
+    <circle cx="14" cy="40" r="3" fill="#8b5cf6"/>
+    <text x="30" y="43" fill="#0f172a" font-weight="600">No-VIS vs VIS</text>
+  </g>
+</svg>
+<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>
+</div>
+</div>
+</div>
+</div>
 
     <details class="drop">
       <summary>Detalle mensual (60 meses · 2021-2025) — click para ver tabla</summary>
       <div class="drop-body">
     <div class="scroll">
       <table>
-        <thead>
+        <thead id="sec3-detalle-thead">
           <tr>
             <th>Mes</th>
             <th class="num col-saviia">Saviia $/m²</th><th class="num col-saviia">u.</th>
@@ -284,7 +334,7 @@
   </div>
 
   <!-- 4. ROTACIÓN -->
-  <div class="section">
+  <div class="section" id="sec4">
     <h2>4 · Rotación promedio · desagregado</h2>
     <div class="h-sub">Años para agotar el inventario disponible al ritmo actual de ventas, y porcentaje de inventario ya colocado. Comparativa entre Saviia, No-VIS zona y VIS zona.</div>
 
@@ -296,12 +346,8 @@
 
     <h3>Comparativa por segmento</h3>
     <table>
-      <thead><tr><th>Segmento</th><th class="num">Proyectos</th><th class="num">Inv. inicial</th><th class="num">Vendidas</th><th class="num">Disponibles</th><th class="num">% vendido</th><th class="num">Vel. (u/año)</th><th class="num">Vel. / Inv.</th><th class="num">Rotación (años)</th></tr></thead>
-      <tbody>
-        <tr><td><strong style="color:var(--saviia)">Saviia</strong></td><td class="num">1</td><td class="num">418</td><td class="num">275</td><td class="num">143</td><td class="num">65.8%</td><td class="num">66</td><td class="num">15.8%</td><td class="num">2.2</td></tr>
-        <tr><td><strong style="color:var(--novis)">No-VIS zona</strong></td><td class="num">11</td><td class="num">4,475</td><td class="num">3,131</td><td class="num">1,344</td><td class="num">70.0%</td><td class="num">882 total · 80 avg</td><td class="num">19.7%</td><td class="num">3.0 avg</td></tr>
-        <tr><td><strong style="color:var(--vis)">VIS zona</strong></td><td class="num">9</td><td class="num">6,389</td><td class="num">3,811</td><td class="num">2,578</td><td class="num">59.6%</td><td class="num">1,472 total · 164 avg</td><td class="num">23.0%</td><td class="num">3.8 avg</td></tr>
-      </tbody>
+      <thead id="sec4-comparativa-thead"></thead>
+      <tbody id="sec4-comparativa-tbody"></tbody>
     </table>
     <div style="font-size:12px;color:var(--muted);margin-top:8px">% vendido = vendidas / inventario inicial (histórico acumulado). Vel. anual = ventas mensuales × 12. Vel. / Inv. = qué porcentaje del inventario se absorbe cada año al ritmo actual. Rotación años = disponibles / vel. anual.</div>
   
@@ -313,7 +359,7 @@
       <label class="filter-chip vis"><input type="checkbox" data-s="vis" checked><span class="dot"></span>VIS zona</label>
     </div>
     <div class="chart-wrap">
-<div class="chart-host" style="position:relative">
+<div class="chart-host" id="sec4-chart-velocidad" style="position:relative">
 <svg viewBox="0 0 980 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
   <rect x="60" y="30" width="900" height="220" fill="#fafbfc" stroke="#e2e8f0"/>
   <line x1="60" y1="250.0" x2="960" y2="250.0" stroke="#e2e8f0"/><line x1="60" y1="213.3" x2="960" y2="213.3" stroke="#e2e8f0"/><line x1="60" y1="176.7" x2="960" y2="176.7" stroke="#e2e8f0"/><line x1="60" y1="140.0" x2="960" y2="140.0" stroke="#e2e8f0"/><line x1="60" y1="103.3" x2="960" y2="103.3" stroke="#e2e8f0"/><line x1="60" y1="66.7" x2="960" y2="66.7" stroke="#e2e8f0"/><line x1="60" y1="30.0" x2="960" y2="30.0" stroke="#e2e8f0"/>
@@ -327,7 +373,7 @@
     </div>
 
     <table style="margin-top:14px">
-      <thead>
+      <thead id="sec4-velocidad-thead">
         <tr>
           <th>Año</th>
           <th class="num col-saviia">Saviia unid</th><th class="num col-saviia">Saviia %</th>
@@ -335,7 +381,7 @@
           <th class="num col-vis">VIS unid</th><th class="num col-vis">VIS %</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="sec4-velocidad-tbody">
 <tr><td><strong>2020</strong></td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-novis">425</td><td class="num col-novis">9.5%</td><td class="num col-vis">—</td><td class="num col-vis">—</td></tr><tr><td><strong>2021</strong></td><td class="num col-saviia">13</td><td class="num col-saviia">3.1%</td><td class="num col-novis">558</td><td class="num col-novis">12.5%</td><td class="num col-vis">471</td><td class="num col-vis">7.4%</td></tr><tr><td><strong>2022</strong></td><td class="num col-saviia">116</td><td class="num col-saviia">27.8%</td><td class="num col-novis">654</td><td class="num col-novis">14.6%</td><td class="num col-vis">1202</td><td class="num col-vis">18.8%</td></tr><tr><td><strong>2023</strong></td><td class="num col-saviia">39</td><td class="num col-saviia">9.3%</td><td class="num col-novis">373</td><td class="num col-novis">8.3%</td><td class="num col-vis">690</td><td class="num col-vis">10.8%</td></tr><tr><td><strong>2024</strong></td><td class="num col-saviia">55</td><td class="num col-saviia">13.2%</td><td class="num col-novis">349</td><td class="num col-novis">7.8%</td><td class="num col-vis">677</td><td class="num col-vis">10.6%</td></tr><tr><td><strong>2025</strong></td><td class="num col-saviia">79</td><td class="num col-saviia">18.9%</td><td class="num col-novis">534</td><td class="num col-novis">11.9%</td><td class="num col-vis">975</td><td class="num col-vis">15.3%</td></tr>
       </tbody>
     </table>
@@ -350,7 +396,7 @@
       <label class="filter-chip vis"><input type="checkbox" data-s="vis" checked><span class="dot"></span>VIS zona</label>
     </div>
     <div class="chart-wrap">
-<div class="chart-host" style="position:relative">
+<div class="chart-host" id="sec4-chart-rotacion" style="position:relative">
 <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">
   <rect x="60" y="30" width="900" height="240" fill="#fafbfc" stroke="#e2e8f0"/>
   <line x1="60" y1="270.0" x2="960" y2="270.0" stroke="#e2e8f0"/><line x1="60" y1="235.7" x2="960" y2="235.7" stroke="#e2e8f0"/><line x1="60" y1="201.4" x2="960" y2="201.4" stroke="#e2e8f0"/><line x1="60" y1="167.1" x2="960" y2="167.1" stroke="#e2e8f0"/><line x1="60" y1="132.9" x2="960" y2="132.9" stroke="#e2e8f0"/><line x1="60" y1="98.6" x2="960" y2="98.6" stroke="#e2e8f0"/><line x1="60" y1="64.3" x2="960" y2="64.3" stroke="#e2e8f0"/><line x1="60" y1="30.0" x2="960" y2="30.0" stroke="#e2e8f0"/>
@@ -364,7 +410,7 @@
     </div>
 
     <table style="margin-top:14px">
-      <thead>
+      <thead id="sec4-rotacion-thead">
         <tr>
           <th>Año</th>
           <th class="num col-saviia">Saviia disp inicio</th><th class="num col-saviia">Saviia ventas</th><th class="num col-saviia">Rotación años</th>
@@ -372,7 +418,7 @@
           <th class="num col-vis">VIS disp inicio</th><th class="num col-vis">VIS ventas</th><th class="num col-vis">Rotación años</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="sec4-rotacion-tbody">
 <tr><td><strong>2020</strong></td><td class="num col-saviia">—</td><td class="num col-saviia">—</td><td class="num col-saviia"><strong>—</strong></td><td class="num col-novis">4475</td><td class="num col-novis">425</td><td class="num col-novis"><strong>10.5</strong></td><td class="num col-vis">—</td><td class="num col-vis">—</td><td class="num col-vis"><strong>—</strong></td></tr><tr><td><strong>2021</strong></td><td class="num col-saviia">418</td><td class="num col-saviia">13</td><td class="num col-saviia"><strong>32.2</strong></td><td class="num col-novis">4050</td><td class="num col-novis">558</td><td class="num col-novis"><strong>7.3</strong></td><td class="num col-vis">6389</td><td class="num col-vis">471</td><td class="num col-vis"><strong>13.6</strong></td></tr><tr><td><strong>2022</strong></td><td class="num col-saviia">405</td><td class="num col-saviia">116</td><td class="num col-saviia"><strong>3.5</strong></td><td class="num col-novis">3492</td><td class="num col-novis">654</td><td class="num col-novis"><strong>5.3</strong></td><td class="num col-vis">5918</td><td class="num col-vis">1202</td><td class="num col-vis"><strong>4.9</strong></td></tr><tr><td><strong>2023</strong></td><td class="num col-saviia">289</td><td class="num col-saviia">39</td><td class="num col-saviia"><strong>7.4</strong></td><td class="num col-novis">2838</td><td class="num col-novis">373</td><td class="num col-novis"><strong>7.6</strong></td><td class="num col-vis">4716</td><td class="num col-vis">690</td><td class="num col-vis"><strong>6.8</strong></td></tr><tr><td><strong>2024</strong></td><td class="num col-saviia">250</td><td class="num col-saviia">55</td><td class="num col-saviia"><strong>4.5</strong></td><td class="num col-novis">2465</td><td class="num col-novis">349</td><td class="num col-novis"><strong>7.1</strong></td><td class="num col-vis">4026</td><td class="num col-vis">677</td><td class="num col-vis"><strong>5.9</strong></td></tr><tr><td><strong>2025</strong></td><td class="num col-saviia">195</td><td class="num col-saviia">79</td><td class="num col-saviia"><strong>2.5</strong></td><td class="num col-novis">2116</td><td class="num col-novis">534</td><td class="num col-novis"><strong>4.0</strong></td><td class="num col-vis">3349</td><td class="num col-vis">975</td><td class="num col-vis"><strong>3.4</strong></td></tr>
       </tbody>
     </table>
@@ -381,14 +427,14 @@
   </div>
 
   <!-- 5. RECOMENDACIÓN -->
-  <div class="section" style="border:2px solid var(--saviia)">
+  <div class="section" id="sec5" style="border:2px solid var(--saviia)">
     <h2 style="color:var(--saviia)">5 · ¿A cuánto deberíamos pagar?</h2>
 
     <!-- Veredicto -->
     <div style="background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:20px;margin-bottom:18px">
       <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--saviia);font-weight:700">Respuesta corta</div>
-      <div style="font-size:24px;font-weight:800;color:var(--saviia);margin:6px 0">Apuntar a −19%, aspirar a −25%, no aceptar menos de −15%</div>
-      <div style="font-size:13px;color:var(--text);line-height:1.6">Saviia tiene fundamentos sólidos (65.8% colocado, queda poco inventario, aceleró en 2025), pero nos cobran <strong>+17.4% por encima del FMP No-VIS</strong> de áreas equivalentes (~$6,870 millones de sobreprecio absoluto). El descuento actual de −6.4% es insuficiente para una operación de $46.5 mil M. Abajo, los referentes de precio y los escenarios de negociación.</div>
+      <div id="sec5-veredicto-title" style="font-size:24px;font-weight:800;color:var(--saviia);margin:6px 0"></div>
+      <div id="sec5-veredicto-texto" style="font-size:13px;color:var(--text);line-height:1.6"></div>
     </div>
 
     <!-- REFERENTES DE PRECIO (solo No-VIS) -->
@@ -415,53 +461,54 @@
     </div>
 
     <!-- FMP CLARO -->
-    <h3>Sobreprecio por tipología · solo comparables No-VIS (trends ponderado 2025)</h3>
+    <h3 id="sec5-fmp-title">Sobreprecio por tipología · solo comparables</h3>
     <table>
-      <thead>
+      <thead id="sec5-fmp-thead">
         <tr>
           <th>Tipología</th>
           <th class="num">Cantidad</th>
-          <th class="num">FMP No-VIS /m²<br><span style="font-weight:400;text-transform:none">(ponderado por ventas 2025 · ±7 m²)</span></th>
-          <th class="num">Nos cobran /m²<br><span style="font-weight:400;text-transform:none">(precio negociado)</span></th>
+          <th class="num">Área (m²)</th>
+          <th class="num">FMP /m²</th>
+          <th class="num">Nos cobran /m²</th>
           <th class="num">Sobreprecio</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td><strong>Tipo C</strong> &mdash; 63.7 m²</td>
-          <td class="num">48</td>
-          <td class="num" style="color:#059669">$4,731,175</td>
-          <td class="num" style="color:#dc2626">$5,649,295</td>
-          <td class="num" style="color:#dc2626;font-weight:700">+19.4%</td>
-        </tr>
-        <tr>
-          <td><strong>Tipo B</strong> &mdash; 70.5 m²</td>
-          <td class="num">14</td>
-          <td class="num" style="color:#059669">$4,642,915</td>
-          <td class="num" style="color:#dc2626">$5,059,844</td>
-          <td class="num" style="color:var(--warn);font-weight:700">+9.0%</td>
-        </tr>
-        <tr>
-          <td><strong>Tipo E</strong> &mdash; 74.1 m²</td>
-          <td class="num">58</td>
-          <td class="num" style="color:#059669">$4,779,013</td>
-          <td class="num" style="color:#dc2626">$5,629,286</td>
-          <td class="num" style="color:#dc2626;font-weight:700">+17.8%</td>
-        </tr>
-        <tr class="total">
-          <td>TOTAL (120 apts)</td>
-          <td class="num">120</td>
-          <td class="num" style="color:#059669">$4,745,378</td>
-          <td class="num" style="color:#dc2626">$5,569,248</td>
-          <td class="num" style="color:#dc2626">+17.4%</td>
-        </tr>
-      </tbody>
+      <tbody id="sec5-fmp-tbody"></tbody>
     </table>
-    <p style="font-size:13px;color:var(--text);margin-top:12px;background:#fef3c7;padding:14px;border-radius:6px;border-left:4px solid var(--warn);line-height:1.6">
-      <strong>En plata:</strong> contra el mercado No-VIS 2025 de áreas equivalentes, estamos pagando <strong>~$6,870 millones de más</strong>.<br>
-      <strong>Tipo B</strong> (14 apts · $5.0M) está prácticamente al precio justo (+9%) — comprable tal cual.<br>
-      <strong>Tipo C y Tipo E</strong> (106 apts · $42M · <strong>89% de la inversión</strong>) nos los cobran +19.4% y +17.8% respectivamente. <strong>Ahí es donde hay que apretar la negociación.</strong>
-    </p>
+    <p id="sec5-plata" style="font-size:13px;color:var(--text);margin-top:12px;background:#fef3c7;padding:14px;border-radius:6px;border-left:4px solid var(--warn);line-height:1.6"></p>
+
+    
+    <details class="drop" style="margin-bottom:14px">
+      <summary>¿Por qué el FMP tipológico está por debajo del FMP general No-VIS? — click para ver</summary>
+      <div class="drop-body">
+        <p style="font-size:13px;line-height:1.6;margin-bottom:10px">
+          El FMP general No-VIS ($4,824,101/m²) incluye todas las tipologías No-VIS vendidas en la zona en 2025. El FMP tipológico ($4,745,378/m²) solo incluye tipologías de áreas similares a Saviia (63.7 a 74.1 m² ±7 m²). La diferencia refleja un patrón real del mercado: las tipologías más grandes se venden a precio m² más alto.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Rango de área</th>
+              <th class="num">Ventas No-VIS 2025</th>
+              <th class="num">Precio m² ponderado</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>&lt; 60 m²</td><td class="num">21</td><td class="num">$4,420,794</td><td style="font-size:12px;color:var(--muted)">Tipologías muy chicas · menor volumen</td></tr>
+            <tr style="background:#fff7ed"><td><strong>60 &mdash; 70 m²</strong></td><td class="num">213</td><td class="num"><strong>$4,730,164</strong></td><td style="font-size:12px"><strong>Tipo C Saviia cae acá</strong></td></tr>
+            <tr style="background:#fff7ed"><td><strong>70 &mdash; 80 m²</strong></td><td class="num">151</td><td class="num"><strong>$4,725,605</strong></td><td style="font-size:12px"><strong>Tipo B y Tipo E Saviia caen acá</strong></td></tr>
+            <tr><td>80 &mdash; 90 m²</td><td class="num">104</td><td class="num" style="color:var(--warn);font-weight:700">$5,199,218</td><td style="font-size:12px;color:var(--muted)">+10% sobre banda 60-80 m² · "premium"</td></tr>
+            <tr><td>&ge; 90 m²</td><td class="num">45</td><td class="num">$4,920,512</td><td style="font-size:12px;color:var(--muted)">Tipologías grandes · menor volumen</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px;line-height:1.6;margin-top:10px">
+          <strong>Lectura:</strong> las tipologías de 60-80 m² son el <em>entry-level</em> del segmento No-VIS (comprador con tope de presupuesto). Las de 80-90 m² son "premium" para compradores con más poder adquisitivo y cuestan ~10% más por m². Las tipologías de Saviia (63.7, 70.5, 74.1 m²) caen enteramente en la banda 60-80 m², por eso el FMP tipológico ($4,745,378) está ligeramente por debajo del FMP general ($4,824,101). <strong>No es un error de datos — es el premium natural de tamaño del mercado No-VIS.</strong>
+        </p>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px">
+          Para evaluar Saviia específicamente el referente correcto es el <strong>FMP tipológico</strong>, porque compara contra aptos de tamaño similar. Si Saviia ofreciera tipologías de 85 m², el FMP relevante sería ~$5.2M/m².
+        </p>
+      </div>
+    </details>
 
     <!-- ARGUMENTOS RESUMIDOS -->
     <h3>Por qué SÍ y por qué NO</h3>
@@ -491,23 +538,10 @@
     <!-- ESCENARIOS -->
     <h3>Escenarios de precio · ¿a qué nivel nos conviene cerrar?</h3>
     <table>
-      <thead><tr><th>Escenario</th><th class="num">Precio /m²</th><th class="num">Inversión 120 apts</th><th class="num">vs lista</th><th>Veredicto</th></tr></thead>
-      <tbody>
-        <tr><td>Precio lista (tope)</td><td class="num">$5,955,259</td><td class="num">$49.68 mil M</td><td class="num">0%</td><td><span style="color:#dc2626;font-weight:600">No pagar · sobreprecio absurdo</span></td></tr>
-        <tr style="background:#fff7ed"><td><strong>Negociado actual (oferta de Tecnourbana)</strong></td><td class="num">$5,572,108</td><td class="num">$46.48 mil M</td><td class="num">−6.4%</td><td><span style="color:var(--warn);font-weight:600">Marginal · negociar más</span></td></tr>
-        <tr><td>Al nivel del No-VIS más caro de zona (San Mateo)</td><td class="num">$5,575,017</td><td class="num">$46.51 mil M</td><td class="num">−6.4%</td><td><span style="color:var(--warn);font-weight:600">Mismo problema · no mejora</span></td></tr>
-        <tr style="background:#ecfdf5"><td><strong>Al FMP del mercado No-VIS 2025 (principal)</strong></td><td class="num">$4,824,101</td><td class="num">$40.24 mil M</td><td class="num">−19.0%</td><td><span style="color:#059669;font-weight:700">Razonable · apuntar acá</span></td></tr>
-        <tr><td>Mediana No-VIS zona</td><td class="num">$4,854,659</td><td class="num">$40.50 mil M</td><td class="num">−18.5%</td><td><span style="color:#059669;font-weight:600">Equivalente al anterior</span></td></tr>
-        <tr style="background:#ecfdf5"><td><strong>Al FMP tipológico No-VIS (áreas equivalentes)</strong></td><td class="num">$4,745,378</td><td class="num">$39.59 mil M</td><td class="num">−20.3%</td><td><span style="color:#059669;font-weight:700">Ideal · FMP ajustado por tipología</span></td></tr>
-      </tbody>
+      <thead><tr><th>Escenario</th><th class="num">Precio /m²</th><th class="num">Inversión</th><th class="num">vs lista</th><th>Veredicto</th></tr></thead>
+      <tbody id="sec5-escenarios-tbody"></tbody>
     </table>
-    <p style="font-size:13px;color:var(--text);margin-top:12px;background:#ecfdf5;padding:14px;border-radius:6px;border-left:4px solid #059669;line-height:1.6">
-      <strong>Recomendación de precio:</strong><br>
-      • <strong>Piso de aceptación: −15%</strong> sobre lista ($5.06M/m² · $42.2 mil M) — solo si hay condiciones adicionales (plazos, garantías, flexibilidad en mix).<br>
-      • <strong>Objetivo principal: −19% a −20%</strong> sobre lista ($4.75M–$4.82M/m² · $39.6–$40.2 mil M) — pagar al FMP No-VIS (promedio general o por tipología, ambos convergen).<br>
-      • <strong>Objetivo ambicioso: −25%</strong> sobre lista ($4.47M/m² · $37.3 mil M) — margen adicional como precio de inversionista institucional.<br>
-      No aceptar nada por encima de −15%.
-    </p>
+    <p id="sec5-recomendacion" style="font-size:13px;color:var(--text);margin-top:12px;background:#ecfdf5;padding:14px;border-radius:6px;border-left:4px solid #059669;line-height:1.6"></p>
   </div>
 
   <!-- 6. METODOLOGÍA -->
@@ -565,30 +599,31 @@
 </div>
 
 <script>
-// chart-tooltip-js
+// chart-tooltip-js (maneja todos los chart-host, no solo el primero)
 (function(){
-  var tip = document.querySelector('.chart-tooltip');
-  if(!tip) return;
-  var host = tip.parentElement;
-  host.addEventListener('mousemove', function(e){
-    var t = e.target;
-    if(t && (t.classList.contains('pt') || t.classList.contains('hit'))){
-      var label = t.getAttribute('data-label');
-      var mes = t.getAttribute('data-mes');
-      var val = t.getAttribute('data-val');
-      var color = t.getAttribute('data-color');
-      tip.innerHTML = '<div style="font-weight:600;color:'+color+'">'+label+'</div>'
-                    + '<div style="opacity:0.85">'+mes+'</div>'
-                    + '<div style="font-size:13px;margin-top:2px">'+val+' / m²</div>';
-      var rect = host.getBoundingClientRect();
-      tip.style.left = (e.clientX - rect.left + 14) + 'px';
-      tip.style.top  = (e.clientY - rect.top  - 10) + 'px';
-      tip.style.display = 'block';
-    } else {
-      tip.style.display = 'none';
-    }
+  document.querySelectorAll('.chart-tooltip').forEach(function(tip){
+    var host = tip.parentElement;
+    if(!host) return;
+    host.addEventListener('mousemove', function(e){
+      var t = e.target;
+      if(t && (t.classList.contains('pt') || t.classList.contains('hit'))){
+        var label = t.getAttribute('data-label') || '';
+        var mes = t.getAttribute('data-mes') || '';
+        var val = t.getAttribute('data-val') || '';
+        var color = t.getAttribute('data-color') || '#0f172a';
+        tip.innerHTML = '<div style="font-weight:600;color:'+color+'">'+label+'</div>'
+                      + '<div style="opacity:0.85;font-size:11px">'+mes+'</div>'
+                      + '<div style="font-size:13px;margin-top:3px;font-weight:600">'+val+'</div>';
+        var rect = host.getBoundingClientRect();
+        tip.style.left = (e.clientX - rect.left + 14) + 'px';
+        tip.style.top  = (e.clientY - rect.top  - 10) + 'px';
+        tip.style.display = 'block';
+      } else {
+        tip.style.display = 'none';
+      }
+    });
+    host.addEventListener('mouseleave', function(){ tip.style.display='none'; });
   });
-  host.addEventListener('mouseleave', function(){ tip.style.display='none'; });
 })();
 </script>
 
@@ -698,6 +733,821 @@
   }
 })();
 </script>
+
+
+<script>
+// chart-tabs toggle
+(function(){
+  document.querySelectorAll('.chart-tabs').forEach(function(tabs){
+    var wrap = tabs.nextElementSibling; // chart-wrap
+    if(!wrap || !wrap.classList.contains('chart-wrap')) return;
+    tabs.querySelectorAll('.chart-tab').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var target = btn.getAttribute('data-tab');
+        tabs.querySelectorAll('.chart-tab').forEach(function(b){ b.classList.toggle('active', b === btn); });
+        wrap.querySelectorAll('.chart-host').forEach(function(h){
+          h.style.display = (h.getAttribute('data-chart-tab') === target) ? '' : 'none';
+        });
+      });
+    });
+  });
+})();
+</script>
+
+
+
+<script>
+// =======================================================
+// RENDER COMPLETO (secs 1-5) - multi-proyecto
+// =======================================================
+  // ya inyectado antes
+
+function fmt(n, dec){ if(n === null || n === undefined || n === '' || isNaN(n)) return '—'; return Number(n).toLocaleString('es-CO', {minimumFractionDigits:dec||0, maximumFractionDigits:dec||0}); }
+function fmtMoney(n){ if(n === null || n === undefined || n === '' || isNaN(n)) return '—'; return '$' + Math.round(Number(n)).toLocaleString('es-CO'); }
+function fmtPct(n, dec){ dec = (dec === undefined) ? 1 : dec; if(n === null || n === undefined || n === '' || isNaN(n)) return '—'; return (Number(n) >= 0 ? '+' : '') + Number(n).toFixed(dec) + '%'; }
+function fmtMilM(n){ if(n === null || n === undefined || n === '' || isNaN(n)) return '—'; return '$' + (Number(n)/1e9).toFixed(2) + ' mil M'; }
+
+// ---- HEADER ----
+function renderHeader(p){
+  var m = p.meta, ma = p.maestro;
+  var seg = (ma.segmento || '').replace(/\/.*/, '') || '—';
+  var unidades = (ma.ofrecidos == 1) ? 'unidad ofrecida' : 'apartamentos ofrecidos';
+  var title = (m.nombre || '—') + ' &mdash; Análisis Inversión Estratégica';
+  var sub = [m.constructora, m.sector, 'Estrato ' + (m.estrato || '—'), seg, (ma.ofrecidos || 0) + ' ' + unidades].join(' · ');
+  document.querySelectorAll('[data-field="header_titulo"]').forEach(function(el){el.innerHTML = title;});
+  document.querySelectorAll('[data-field="header_sub"]').forEach(function(el){el.innerHTML = sub;});
+}
+
+// ---- SEC 1 ----
+function renderSec1(p){
+  var ma = p.maestro;
+  document.querySelectorAll('[data-field="total_apts"]').forEach(function(el){el.textContent = fmt(ma.inv_total);});
+  document.querySelectorAll('[data-field="total_detail"]').forEach(function(el){el.textContent = 'en ' + p.tipologias.length + ' tipologí' + (p.tipologias.length == 1 ? 'a' : 'as');});
+  document.querySelectorAll('[data-field="vendidos"]').forEach(function(el){el.textContent = fmt(ma.vendidas);});
+  document.querySelectorAll('[data-field="vendidos_pct"]').forEach(function(el){el.textContent = ((ma.pct_vendido !== null) ? ma.pct_vendido.toFixed(1) : '—') + '% del proyecto';});
+  document.querySelectorAll('[data-field="disponibles"]').forEach(function(el){el.textContent = fmt(ma.disp_lgi);});
+  document.querySelectorAll('[data-field="disp_pct"]').forEach(function(el){el.textContent = ((ma.pct_disp !== null) ? ma.pct_disp.toFixed(1) : '—') + '% del proyecto';});
+  document.querySelectorAll('[data-field="ofrecidos"]').forEach(function(el){el.textContent = fmt(ma.ofrecidos);});
+  var pp = (ma.pct_proyecto !== null) ? ma.pct_proyecto.toFixed(1) + '%' : '—';
+  var pd = (ma.pct_disp_ofrecido !== null) ? ma.pct_disp_ofrecido.toFixed(1) + '%' : '—';
+  document.querySelectorAll('[data-field="ofrecidos_pct"]').forEach(function(el){el.textContent = pp + ' del proyecto · ' + pd + ' del disponible';});
+  document.querySelectorAll('[data-field="ofrecidos_detail"]').forEach(function(el){el.textContent = 'en ' + p.tipologias.length + ' tipologí' + (p.tipologias.length == 1 ? 'a' : 'as');});
+}
+
+// ---- SEC 5 · TABLA FMP ----
+function renderSec5_FMP(p){
+  var tbody = document.getElementById('sec5-fmp-tbody');
+  if(!tbody) return;
+  var seg = (p.maestro.segmento || '').replace(/\/.*/, '').trim() || 'segmento';
+  var th = document.getElementById('sec5-fmp-title');
+  if(th) th.textContent = 'Sobreprecio por tipología · solo comparables ' + seg;
+
+  var rows = '';
+  p.tipologias.forEach(function(t){
+    var cant = t.cantidad == null ? '—' : t.cantidad;
+    var area = t.area == null ? '—' : (t.area.toFixed ? t.area.toFixed(2) : t.area);
+    var fmp = t.fmp_m2 == null ? '—' : fmtMoney(t.fmp_m2);
+    var neg = t.precio_negoc_m2 == null ? '—' : fmtMoney(t.precio_negoc_m2);
+    var sp = t.sobreprecio_pct;
+    var spTxt, spStyle;
+    if(sp == null){ spTxt = '—'; spStyle = 'color:#64748b'; }
+    else if(sp > 15){ spTxt = fmtPct(sp); spStyle = 'color:#dc2626;font-weight:700'; }
+    else if(sp > 5){ spTxt = fmtPct(sp); spStyle = 'color:var(--warn);font-weight:700'; }
+    else if(sp < -5){ spTxt = fmtPct(sp); spStyle = 'color:#059669;font-weight:700'; }
+    else { spTxt = fmtPct(sp); spStyle = 'color:#475569;font-weight:600'; }
+
+    rows += '<tr>' +
+      '<td><strong>' + t.tipo + '</strong>' + (t.nota ? '<br><span style="font-size:11px;color:var(--muted)">' + t.nota + '</span>' : '') + '</td>' +
+      '<td class="num">' + cant + '</td>' +
+      '<td class="num">' + area + '</td>' +
+      '<td class="num" style="color:#059669">' + fmp + '</td>' +
+      '<td class="num" style="color:#dc2626">' + neg + '</td>' +
+      '<td class="num" style="' + spStyle + '">' + spTxt + '</td>' +
+    '</tr>';
+  });
+
+  // Fila total
+  var st = p.stats;
+  var totalSp = st.sobreprecio_pct;
+  var totalStyle = (totalSp != null && totalSp > 10) ? 'color:#dc2626' : (totalSp != null && totalSp < -5 ? 'color:#059669' : 'color:var(--warn)');
+  rows += '<tr class="total">' +
+    '<td>TOTAL (' + p.maestro.ofrecidos + ' apts)</td>' +
+    '<td class="num">' + p.maestro.ofrecidos + '</td>' +
+    '<td class="num">' + (st.area_total_ofrecida || '—') + '</td>' +
+    '<td class="num" style="color:#059669">' + fmtMoney(st.fmp_ponderado_m2) + '</td>' +
+    '<td class="num" style="color:#dc2626">' + fmtMoney(st.negoc_ponderado_m2) + '</td>' +
+    '<td class="num" style="' + totalStyle + '">' + fmtPct(totalSp) + '</td>' +
+  '</tr>';
+
+  tbody.innerHTML = rows;
+}
+
+// ---- SEC 5 · "En plata" callout ----
+function renderSec5_Plata(p){
+  var el = document.getElementById('sec5-plata');
+  if(!el) return;
+  var st = p.stats;
+  if(st.sobreprecio_pct == null){
+    el.innerHTML = '<strong>En plata:</strong> no hay suficientes comparables del mismo segmento para calcular un FMP robusto para este proyecto. Los datos mostrados son preliminares.';
+    return;
+  }
+  var absSobre = (st.negoc_ponderado_m2 - st.fmp_ponderado_m2) * st.area_total_ofrecida;
+  var seg = (p.maestro.segmento || '').replace(/\/.*/, '').trim() || 'segmento';
+  var msg;
+  if(st.sobreprecio_pct > 5){
+    msg = '<strong>En plata:</strong> contra el mercado ' + seg + ' 2025 de áreas equivalentes, estamos pagando <strong>~' + fmtMilM(absSobre) + '</strong> de más sobre los ' + (st.area_total_ofrecida || 0) + ' m² ofrecidos.';
+  } else if(st.sobreprecio_pct < -5){
+    msg = '<strong>En plata:</strong> el precio ofrecido está <strong>por debajo del FMP</strong> del mercado ' + seg + ' (~' + fmtMilM(-absSobre) + ' de descuento sobre los ' + (st.area_total_ofrecida || 0) + ' m²). Verificar consistencia de datos antes de avanzar.';
+  } else {
+    msg = '<strong>En plata:</strong> el precio negociado está aproximadamente al nivel del FMP del mercado ' + seg + ' de áreas equivalentes.';
+  }
+  el.innerHTML = msg;
+}
+
+// ---- SEC 5 · Escenarios ----
+function renderSec5_Escenarios(p){
+  var tbody = document.getElementById('sec5-escenarios-tbody');
+  var rec = document.getElementById('sec5-recomendacion');
+  if(!tbody) return;
+
+  var st = p.stats;
+  var negoc = st.negoc_ponderado_m2;
+  var fmp = st.fmp_ponderado_m2;
+  var area = st.area_total_ofrecida || 0;
+  var lista = null;
+  if(p.id === 'saviia'){ lista = 5955259; }  // Saviia es el único donde conocemos precio lista vs negociado
+  if(!lista) lista = negoc;  // Si no hay lista distinta, asumimos que el negociado es el de oferta actual
+  var descLista = (negoc && lista) ? ((negoc/lista - 1) * 100) : 0;
+
+  var recomendado = fmp ? Math.round(fmp * 0.95) : null;
+  var rows = '';
+
+  // Fila 1: precio lista (si difiere del negociado)
+  if(lista && lista !== negoc){
+    rows += '<tr><td><strong>Precio lista</strong></td>' +
+      '<td class="num">' + fmtMoney(lista) + '</td>' +
+      '<td class="num">' + fmtMilM(lista * area) + '</td>' +
+      '<td class="num">0%</td>' +
+      '<td><span style="color:#dc2626;font-weight:600">No pagar</span></td></tr>';
+  }
+  // Fila 2: negociado actual
+  rows += '<tr style="background:#fff7ed"><td><strong>Lo que nos ofrecen</strong></td>' +
+    '<td class="num">' + fmtMoney(negoc) + '</td>' +
+    '<td class="num">' + fmtMilM(negoc * area) + '</td>' +
+    '<td class="num">' + (lista && lista !== negoc ? fmtPct(descLista) : '—') + '</td>' +
+    '<td><span style="color:var(--warn);font-weight:600">' + (st.sobreprecio_pct != null && st.sobreprecio_pct > 5 ? 'Marginal · negociar más' : 'Precio oferta actual') + '</span></td></tr>';
+
+  // Fila 3: precio recomendado (FMP - 5%)
+  if(recomendado){
+    var descRec = ((recomendado/lista - 1) * 100);
+    rows += '<tr style="background:#ecfdf5"><td><strong>Precio recomendado (FMP − 5%)</strong></td>' +
+      '<td class="num">' + fmtMoney(recomendado) + '</td>' +
+      '<td class="num">' + fmtMilM(recomendado * area) + '</td>' +
+      '<td class="num">' + fmtPct(descRec) + '</td>' +
+      '<td><span style="color:#059669;font-weight:700">Margen de seguridad sobre FMP</span></td></tr>';
+  }
+
+  tbody.innerHTML = rows;
+
+  // Recomendación
+  if(rec){
+    if(fmp){
+      rec.innerHTML = '<strong>¿Qué es "FMP − 5%"?</strong> El FMP tipológico ' + ((p.maestro.segmento||'').replace(/\/.*/,'').trim()||'') + ' (' + fmtMoney(fmp) + '/m²) es el precio que paga el mercado por áreas equivalentes. Recomendamos pagar <strong>5% por debajo</strong> como margen de seguridad. Precio objetivo: <strong>' + fmtMoney(recomendado) + '/m² · ' + fmtMilM(recomendado * area) + '</strong>.';
+    } else {
+      rec.innerHTML = '<strong>No hay suficientes datos</strong> para calcular un precio recomendado robusto. Se necesita más información del mercado comparable.';
+    }
+  }
+}
+
+// ---- SEC 5 · Veredicto corto ----
+function renderSec5_Veredicto(p){
+  var t = document.getElementById('sec5-veredicto-title');
+  var x = document.getElementById('sec5-veredicto-texto');
+  if(!t || !x) return;
+  var st = p.stats;
+  var nombre = p.meta.nombre;
+  if(st.sobreprecio_pct == null){
+    t.textContent = 'Datos insuficientes';
+    x.innerHTML = 'Para ' + nombre + ' no hay datos suficientes de comparables 2025 del mismo segmento para emitir un veredicto robusto. Revisar la sección 5 con cautela.';
+    return;
+  }
+  if(st.sobreprecio_pct > 15){
+    t.textContent = 'Apuntar a −' + Math.round(st.sobreprecio_pct) + '% · no pagar lo que ofrecen';
+    x.innerHTML = nombre + ' está <strong>' + fmtPct(st.sobreprecio_pct) + ' sobre el FMP</strong> del mercado de áreas equivalentes. El descuento actual es insuficiente.';
+  } else if(st.sobreprecio_pct > 5){
+    t.textContent = 'Margen de negociación: −' + Math.round(st.sobreprecio_pct + 5) + '%';
+    x.innerHTML = nombre + ' está <strong>' + fmtPct(st.sobreprecio_pct) + ' sobre el FMP</strong>. Negociar descuento adicional.';
+  } else if(st.sobreprecio_pct < -5){
+    t.textContent = 'Precio atractivo — revisar datos';
+    x.innerHTML = nombre + ' está <strong>' + fmtPct(st.sobreprecio_pct) + ' bajo el FMP</strong>. Validar la calidad de los comparables antes de cerrar.';
+  } else {
+    t.textContent = 'Precio en línea con el mercado';
+    x.innerHTML = nombre + ' está <strong>' + fmtPct(st.sobreprecio_pct) + ' vs FMP</strong> — prácticamente al precio de mercado del segmento.';
+  }
+}
+
+// ---- SEC 3 · Resumen anual ----
+function renderSec3_ResumenAnual(p){
+  var thead = document.getElementById('sec3-resumen-thead');
+  var tbody = document.getElementById('sec3-resumen-tbody');
+  if(!thead || !tbody) return;
+
+  var data = p.resumen_anual || [];
+  if(data.length === 0){
+    thead.innerHTML = '<tr><th>Año</th><th>Sin datos</th></tr>';
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--muted);padding:20px">Sin datos históricos para este proyecto</td></tr>';
+    return;
+  }
+
+  // Detectar qué segmentos aparecen
+  var segs = [];
+  data.forEach(function(r){ Object.keys(r).forEach(function(k){ if(k !== 'anio' && segs.indexOf(k) < 0) segs.push(k); }); });
+  // Orden canónico
+  var order = ['focal', 'NoVIS', 'VIS', 'VIP'];
+  segs.sort(function(a,b){ return order.indexOf(a) - order.indexOf(b); });
+
+  var labels = {focal: 'Focal', NoVIS: 'No-VIS zona', VIS: 'VIS zona', VIP: 'VIP zona'};
+  var classes = {focal: 'col-saviia', NoVIS: 'col-novis', VIS: 'col-vis', VIP: 'col-vis'};
+  var focalLabel = p.meta.nombre;
+
+  var th = '<tr><th>Año</th>';
+  segs.forEach(function(s){
+    var lbl = (s === 'focal') ? focalLabel : labels[s];
+    th += '<th class="num ' + (classes[s] || '') + '">' + lbl + ' $/m²</th>';
+    th += '<th class="num ' + (classes[s] || '') + '">var %</th>';
+  });
+  th += '</tr>';
+  thead.innerHTML = th;
+
+  var rows = '';
+  data.forEach(function(r, i){
+    var prev = (i > 0) ? data[i-1] : null;
+    rows += '<tr><td><strong>' + r.anio + '</strong></td>';
+    segs.forEach(function(s){
+      var v = r[s];
+      var p0 = prev ? prev[s] : null;
+      var deltaPct = (v && p0) ? ((v/p0 - 1) * 100) : null;
+      rows += '<td class="num ' + (classes[s] || '') + '">' + fmtMoney(v) + '</td>';
+      rows += '<td class="num ' + (classes[s] || '') + '">' + (deltaPct === null ? '—' : '<span class="delta-pos">' + fmtPct(deltaPct) + '</span>') + '</td>';
+    });
+    rows += '</tr>';
+  });
+  tbody.innerHTML = rows;
+}
+
+// ---- SEC 4 · Comparativa por segmento ----
+function renderSec4_Comparativa(p){
+  var thead = document.getElementById('sec4-comparativa-thead');
+  var tbody = document.getElementById('sec4-comparativa-tbody');
+  if(!thead || !tbody) return;
+
+  var invSeg = p.inv_por_seg || {};
+  var focalKey = 'focal';
+  var nombre = p.meta.nombre;
+  var segs = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return invSeg[s] != null; });
+  if(segs.length === 0){
+    thead.innerHTML = '<tr><th>Sin datos</th></tr>';
+    tbody.innerHTML = '<tr><td style="text-align:center;color:var(--muted);padding:20px">Sin datos para este proyecto</td></tr>';
+    return;
+  }
+
+  thead.innerHTML = '<tr><th>Segmento</th><th class="num">Inv. inicial</th><th class="num">Vel. anual avg</th><th class="num">Rotación (años)</th></tr>';
+
+  // Calcular velocidad y rotación promedio desde el data velocidad_anual
+  var velData = p.velocidad_anual || [];
+  var rotData = p.rotacion_anual || [];
+
+  var rows = '';
+  segs.forEach(function(seg){
+    var inv = invSeg[seg];
+    var lastVel = velData.length ? velData[velData.length - 1] : null;
+    var lastRot = rotData.length ? rotData[rotData.length - 1] : null;
+    var velPct = lastVel ? lastVel[seg + '_pct'] : null;
+    var rotY = lastRot ? lastRot[seg + '_rot'] : null;
+
+    var lbl = (seg === 'focal') ? nombre : ({NoVIS: 'No-VIS zona', VIS: 'VIS zona', VIP: 'VIP zona'}[seg] || seg);
+    var color = (seg === 'focal') ? 'var(--saviia)' : (seg === 'NoVIS' ? 'var(--novis)' : (seg === 'VIS' ? 'var(--vis)' : '#64748b'));
+    rows += '<tr><td><strong style="color:' + color + '">' + lbl + '</strong></td>';
+    rows += '<td class="num">' + fmt(inv) + '</td>';
+    rows += '<td class="num">' + (velPct != null ? velPct.toFixed(1) + '%' : '—') + '</td>';
+    rows += '<td class="num">' + (rotY != null ? rotY.toFixed(1) : '—') + '</td>';
+    rows += '</tr>';
+  });
+  tbody.innerHTML = rows;
+}
+
+// ---- SEC 4 · Velocidad anual (tabla + gráfica) ----
+function renderSec4_Velocidad(p){
+  var thead = document.getElementById('sec4-velocidad-thead');
+  var tbody = document.getElementById('sec4-velocidad-tbody');
+  if(!thead || !tbody) return;
+
+  var data = p.velocidad_anual || [];
+  if(data.length === 0){
+    thead.innerHTML = '<tr><th>Sin datos</th></tr>';
+    tbody.innerHTML = '<tr><td style="text-align:center;color:var(--muted);padding:20px">Sin datos</td></tr>';
+    return;
+  }
+
+  var segs = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return data.some(function(r){ return r[s + '_pct'] != null; }); });
+  var labels = {focal: p.meta.nombre, NoVIS: 'No-VIS', VIS: 'VIS', VIP: 'VIP'};
+  var classes = {focal: 'col-saviia', NoVIS: 'col-novis', VIS: 'col-vis', VIP: 'col-vis'};
+
+  var th = '<tr><th>Año</th>';
+  segs.forEach(function(s){
+    th += '<th class="num ' + (classes[s] || '') + '">' + labels[s] + ' unid</th>';
+    th += '<th class="num ' + (classes[s] || '') + '">' + labels[s] + ' %</th>';
+  });
+  th += '</tr>';
+  thead.innerHTML = th;
+
+  var rows = '';
+  data.forEach(function(r){
+    rows += '<tr><td><strong>' + r.anio + '</strong></td>';
+    segs.forEach(function(s){
+      var u = r[s + '_unid'];
+      var pct = r[s + '_pct'];
+      rows += '<td class="num ' + (classes[s] || '') + '">' + (u != null ? u : '—') + '</td>';
+      rows += '<td class="num ' + (classes[s] || '') + '">' + (pct != null ? pct.toFixed(1) + '%' : '—') + '</td>';
+    });
+    rows += '</tr>';
+  });
+  tbody.innerHTML = rows;
+}
+
+// ---- SEC 4 · Rotación anual (tabla) ----
+function renderSec4_Rotacion(p){
+  var thead = document.getElementById('sec4-rotacion-thead');
+  var tbody = document.getElementById('sec4-rotacion-tbody');
+  if(!thead || !tbody) return;
+
+  var data = p.rotacion_anual || [];
+  if(data.length === 0){
+    thead.innerHTML = '<tr><th>Sin datos</th></tr>';
+    tbody.innerHTML = '<tr><td style="text-align:center;color:var(--muted);padding:20px">Sin datos</td></tr>';
+    return;
+  }
+
+  var segs = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return data.some(function(r){ return r[s + '_rot'] != null; }); });
+  var labels = {focal: p.meta.nombre, NoVIS: 'No-VIS', VIS: 'VIS', VIP: 'VIP'};
+  var classes = {focal: 'col-saviia', NoVIS: 'col-novis', VIS: 'col-vis', VIP: 'col-vis'};
+
+  var th = '<tr><th>Año</th>';
+  segs.forEach(function(s){
+    th += '<th class="num ' + (classes[s] || '') + '">' + labels[s] + ' disp inicio</th>';
+    th += '<th class="num ' + (classes[s] || '') + '">' + labels[s] + ' ventas</th>';
+    th += '<th class="num ' + (classes[s] || '') + '">Rotación años</th>';
+  });
+  th += '</tr>';
+  thead.innerHTML = th;
+
+  var rows = '';
+  data.forEach(function(r){
+    rows += '<tr><td><strong>' + r.anio + '</strong></td>';
+    segs.forEach(function(s){
+      var di = r[s + '_disp_ini'];
+      var v = r[s + '_ventas'];
+      var rot = r[s + '_rot'];
+      rows += '<td class="num ' + (classes[s] || '') + '">' + (di != null ? di : '—') + '</td>';
+      rows += '<td class="num ' + (classes[s] || '') + '">' + (v != null ? v : '—') + '</td>';
+      rows += '<td class="num ' + (classes[s] || '') + '"><strong>' + (rot != null ? rot.toFixed(1) : '—') + '</strong></td>';
+    });
+    rows += '</tr>';
+  });
+  tbody.innerHTML = rows;
+}
+
+// ---- SEC 2 · Mapa Leaflet ----
+var __mapaInstance = null;
+function renderMapa(p){
+  if(typeof L === 'undefined') return;
+  var div = document.getElementById('mapa-proyectos');
+  if(!div) return;
+
+  // Si ya existe mapa, destruirlo
+  if(__mapaInstance){
+    __mapaInstance.remove();
+    __mapaInstance = null;
+  }
+
+  // Buscar coords del focal en los datos (los meta tienen lat/lng ya)
+  var comps = p.competidores || [];
+  // El focal no está en competidores — necesitamos lat/lng del focal
+  // Los guardamos en window.FOCAL_COORDS (sobrescrito por cada proyecto)
+  var focalCoords = window.FOCAL_COORDS_BY_ID[p.id];
+  if(!focalCoords) return;
+
+  var map = L.map('mapa-proyectos').setView([focalCoords.lat, focalCoords.lng], 15);
+  __mapaInstance = map;
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  var radio = p.radio_m || 2000;
+  L.circle([focalCoords.lat, focalCoords.lng], {
+    radius: radio, color: '#ea580c', weight: 1.5, dashArray: '6 6', fillOpacity: 0.05, fillColor: '#ea580c'
+  }).addTo(map);
+
+  function popup(pr, esFocal){
+    var pctSold = pr.inventario_inicial > 0 ? (pr.unidades_vendidas / pr.inventario_inicial * 100).toFixed(1) + '%' : '—';
+    var tipo = pr.vis_novis || '—';
+    var header = esFocal
+      ? '<div style="font-weight:700;color:#ea580c;font-size:14px">★ ' + pr.proyecto + '</div>'
+      : '<div style="font-weight:700;color:#1e3a5f;font-size:14px">' + pr.proyecto + '</div>';
+    return header +
+      '<div style="font-size:11px;color:#64748b;margin-bottom:6px">' + (pr.vendedor || '—') + ' · ' + tipo + '</div>' +
+      '<table style="font-size:12px;border-collapse:collapse">' +
+      '<tr><td style="padding:2px 8px 2px 0">Inventario</td><td style="padding:2px 0;font-weight:600">' + (pr.inventario_inicial || '—') + '</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Vendidas</td><td style="padding:2px 0;font-weight:600">' + (pr.unidades_vendidas || 0) + ' (' + pctSold + ')</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Disponibles</td><td style="padding:2px 0;font-weight:600">' + (pr.unidades_disponibles || 0) + '</td></tr>' +
+      '<tr><td style="padding:2px 8px 2px 0">Precio m²</td><td style="padding:2px 0;font-weight:600">' + fmtMoney(pr.precio_m2) + '</td></tr>' +
+      (esFocal ? '' : '<tr><td style="padding:2px 8px 2px 0">Distancia</td><td style="padding:2px 0;font-weight:600">' + (pr.dist_m || 0) + ' m</td></tr>') +
+      '</table>';
+  }
+
+  // Marcador focal
+  var focalPseudo = {
+    proyecto: p.meta.nombre, vendedor: p.meta.vendedor, vis_novis: p.maestro.segmento,
+    inventario_inicial: p.maestro.inv_total, unidades_vendidas: p.maestro.vendidas,
+    unidades_disponibles: p.maestro.disp_lgi, precio_m2: null
+  };
+  L.circleMarker([focalCoords.lat, focalCoords.lng], {
+    radius: 14, fillColor: '#ea580c', color: 'white', weight: 3, fillOpacity: 0.95
+  }).addTo(map).bindPopup(popup(focalPseudo, true)).bindTooltip('<strong>' + p.meta.nombre + '</strong>', {direction:'top', offset:[0,-12]});
+
+  // Competidores
+  comps.forEach(function(pr){
+    var lat = parseFloat(pr.latitud);
+    var lng = parseFloat(pr.longitud);
+    if(isNaN(lat) || isNaN(lng)) return;
+    var esVis = (pr.vis_novis || '').indexOf('Vis') >= 0 && (pr.vis_novis || '').indexOf('No') < 0;
+    var radius = Math.max(5, Math.min(12, Math.sqrt(parseFloat(pr.inventario_inicial) || 100) / 3));
+    L.circleMarker([lat, lng], {
+      radius: radius, fillColor: esVis ? '#3b82f6' : '#8b5cf6', color: 'white', weight: 2, fillOpacity: 0.85
+    }).addTo(map).bindPopup(popup(pr, false)).bindTooltip(pr.proyecto, {direction:'top', offset:[0,-6]});
+  });
+}
+
+// Coords de cada focal (inyectados desde Python)
+window.FOCAL_COORDS_BY_ID = {
+  saviia:     {lat: 5.015443,   lng: -73.991969},
+  cedromonti: {lat: 5.03321,    lng: -73.99989},
+  galicia:    {lat: 4.7381618,  lng: -74.0867093},
+  nqs67:      {lat: 4.663453,   lng: -74.076914},
+  tyba:       {lat: 4.85457,    lng: -74.05999},
+  altamorada: {lat: 4.959967,   lng: -73.928906},
+  montecielo: {lat: 4.615361,   lng: -74.195864},
+  turpiales:  {lat: 4.7886611,  lng: -74.0298738},
+  tinguas:    {lat: 4.7886611,  lng: -74.0298738},
+  porto13:    {lat: 4.65646,    lng: -74.13382},
+  laurel:     {lat: 4.714267,   lng: -73.96902},
+  maui68:     {lat: 4.596633,   lng: -74.137926},
+  suram308:   {lat: 4.567562,   lng: -74.094918}
+};
+
+
+// ============================================================
+// GRÁFICAS SVG DINÁMICAS
+// ============================================================
+
+// Helper: construir SVG con ejes/ticks + paths + dots
+function buildLineChart(opts){
+  // opts: {W, H, margin, yMin, yMax, xLabels, yTicks, yFmt, series: [{color, points:[{x,y,label,meta,val}], name, width}]}
+  var W = opts.W, H = opts.H, m = opts.margin;
+  var pw = W - m.l - m.r, ph = H - m.t - m.b;
+  var yMin = opts.yMin, yMax = opts.yMax;
+  var xN = opts.xLabels.length;
+  var xs = function(i){ return m.l + (xN > 1 ? (i/(xN-1))*pw : pw/2); };
+  var ys = function(v){ return (H - m.b) - ((v - yMin)/(yMax - yMin))*ph; };
+
+  var grid = '';
+  opts.yTicks.forEach(function(t){
+    var y = ys(t);
+    grid += '<line x1="' + m.l + '" y1="' + y.toFixed(1) + '" x2="' + (W - m.r) + '" y2="' + y.toFixed(1) + '" stroke="#e2e8f0"/>';
+    grid += '<text x="' + (m.l - 6) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" font-size="10" fill="#64748b">' + opts.yFmt(t) + '</text>';
+  });
+  var xLabelsSvg = '';
+  opts.xLabels.forEach(function(lbl, i){
+    xLabelsSvg += '<text x="' + xs(i).toFixed(1) + '" y="' + (H - m.b + 16) + '" text-anchor="middle" font-size="11" fill="#475569" font-weight="600">' + lbl + '</text>';
+  });
+
+  var paths = '', dots = '';
+  opts.series.forEach(function(s){
+    if(!s.points || s.points.length === 0) return;
+    // Construir path (con posibles gaps si val es null)
+    var d = '', penUp = true;
+    s.points.forEach(function(p){
+      if(p.val === null || p.val === undefined){ penUp = true; return; }
+      var cmd = penUp ? 'M' : 'L';
+      d += cmd + xs(p.x).toFixed(1) + ',' + ys(p.val).toFixed(1);
+      penUp = false;
+    });
+    paths += '<path d="' + d + '" fill="none" stroke="' + s.color + '" stroke-width="' + (s.width || 2.5) + '" stroke-linejoin="round" data-series="' + (s.id || '') + '"/>';
+
+    // Dots con data-attrs para tooltip
+    s.points.forEach(function(p){
+      if(p.val === null || p.val === undefined) return;
+      var cx = xs(p.x).toFixed(1), cy = ys(p.val).toFixed(1);
+      dots += '<circle class="pt" cx="' + cx + '" cy="' + cy + '" r="' + (s.width >= 2.5 ? 3.5 : 3) + '" fill="' + s.color + '" data-series="' + (s.id || '') + '" data-label="' + (s.name || '') + '" data-mes="' + (p.label || '') + '" data-val="' + (p.tooltip || '') + '" data-color="' + s.color + '"/>';
+      dots += '<circle class="hit" cx="' + cx + '" cy="' + cy + '" r="10" fill="transparent" data-series="' + (s.id || '') + '" data-label="' + (s.name || '') + '" data-mes="' + (p.label || '') + '" data-val="' + (p.tooltip || '') + '" data-color="' + s.color + '"/>';
+    });
+  });
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">' +
+    '<rect x="' + m.l + '" y="' + m.t + '" width="' + pw + '" height="' + ph + '" fill="#fafbfc" stroke="#e2e8f0"/>' +
+    grid + xLabelsSvg + paths + dots;
+  if(opts.legend){
+    svg += '<g transform="translate(' + (m.l + 10) + ',' + (m.t + 8) + ')" font-size="11" font-family="Inter,sans-serif">';
+    svg += '<rect x="-4" y="-4" width="' + (opts.legend.width || 250) + '" height="' + (opts.legend.items.length * 16 + 4) + '" fill="white" stroke="#e2e8f0" rx="4"/>';
+    opts.legend.items.forEach(function(it, i){
+      var y = 8 + i * 16;
+      svg += '<line x1="4" y1="' + y + '" x2="24" y2="' + y + '" stroke="' + it.color + '" stroke-width="2.5"/>';
+      svg += '<circle cx="14" cy="' + y + '" r="3" fill="' + it.color + '"/>';
+      svg += '<text x="30" y="' + (y + 3) + '" fill="#0f172a" font-weight="600">' + it.label + '</text>';
+    });
+    svg += '</g>';
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+// SEC 3 · Gráfica mensual de precios (3 series)
+function renderSec3_GraficaMensual(p){
+  var host = document.getElementById('sec3-chart-precios');
+  if(!host) return;
+
+  // Obtener lista de meses ordenados + series por segmento
+  var pivot = p.hist_mensual_pivot || {};
+  var meses = Object.keys(pivot).sort();
+  if(meses.length === 0){
+    host.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">Sin datos históricos</div>';
+    return;
+  }
+
+  // Detectar segmentos disponibles
+  var segs = new Set();
+  meses.forEach(function(m){ Object.keys(pivot[m] || {}).forEach(function(s){ segs.add(s); }); });
+  var segList = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return segs.has(s); });
+
+  var colors = {focal: '#ea580c', NoVIS: '#8b5cf6', VIS: '#3b82f6', VIP: '#10b981'};
+  var names = {focal: p.meta.nombre, NoVIS: 'No-VIS zona', VIS: 'VIS zona', VIP: 'VIP zona'};
+
+  // Calcular yMin/yMax
+  var allVals = [];
+  meses.forEach(function(m){ segList.forEach(function(s){ var v = (pivot[m][s] || {}).pm2; if(v) allVals.push(v); }); });
+  if(allVals.length === 0){
+    host.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">Sin datos</div>';
+    return;
+  }
+  var yMin = Math.floor(Math.min.apply(null, allVals) / 500000) * 500000;
+  var yMax = Math.ceil(Math.max.apply(null, allVals) / 500000) * 500000;
+
+  // Ticks Y cada 500k o 1M
+  var step = (yMax - yMin) > 3000000 ? 1000000 : 500000;
+  var yTicks = [];
+  for(var y = yMin; y <= yMax; y += step) yTicks.push(y);
+
+  // Labels X (cada año)
+  var xLabels = meses.map(function(m, i){
+    var y = m.slice(0,4);
+    // Mostrar solo el primer mes de cada año
+    if(i === 0) return y;
+    if(m.slice(0,4) !== meses[i-1].slice(0,4)) return y;
+    return '';
+  });
+
+  var series = segList.map(function(s){
+    return {
+      id: s, color: colors[s], name: names[s], width: s === 'focal' ? 2.5 : 2,
+      points: meses.map(function(m, i){
+        var v = (pivot[m][s] || {}).pm2;
+        return {x: i, val: v, label: m, tooltip: v ? '$' + v.toLocaleString('es-CO') + '/m²' : '—'};
+      })
+    };
+  });
+
+  var svg = buildLineChart({
+    W: 1080, H: 340, margin: {l: 70, r: 20, t: 30, b: 50},
+    yMin: yMin, yMax: yMax, xLabels: xLabels, yTicks: yTicks,
+    yFmt: function(v){ return '$' + (v/1000000).toFixed(1) + 'M'; },
+    series: series,
+    legend: {
+      width: 260, items: segList.map(function(s){ return {color: colors[s], label: names[s]}; })
+    }
+  });
+
+  var tooltipDiv = '<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>';
+
+  host.innerHTML = svg + tooltipDiv;
+}
+
+// SEC 3 · Gráfica de gap anual
+function renderSec3_GraficaGap(p){
+  var host = document.getElementById('sec3-chart-gap');
+  if(!host) return;
+  var resumen = p.resumen_anual || [];
+  if(resumen.length === 0){
+    host.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">Sin datos anuales</div>';
+    return;
+  }
+
+  // Calcular los 3 deltas: focal vs NoVIS, focal vs VIS, NoVIS vs VIS (fórmula (mayor-menor)/mayor)
+  var gapData = resumen.map(function(r){
+    function calc(a, b){
+      if(a == null || b == null) return null;
+      var mayor = Math.max(a, b);
+      var menor = Math.min(a, b);
+      if(mayor === 0) return null;
+      return (mayor - menor) / mayor * 100;
+    }
+    return {
+      anio: r.anio,
+      focal_vs_novis: calc(r.focal, r.NoVIS),
+      focal_vs_vis: calc(r.focal, r.VIS),
+      novis_vs_vis: calc(r.NoVIS, r.VIS)
+    };
+  });
+
+  var anios = gapData.map(function(r){ return r.anio; });
+  var allVals = [];
+  gapData.forEach(function(r){
+    ['focal_vs_novis', 'focal_vs_vis', 'novis_vs_vis'].forEach(function(k){ if(r[k] != null) allVals.push(r[k]); });
+  });
+  if(allVals.length === 0){
+    host.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">Sin gaps calculables</div>';
+    return;
+  }
+  var yMax = Math.max(25, Math.ceil(Math.max.apply(null, allVals) / 5) * 5);
+
+  var SAV = '#ea580c', DARK = '#9a3412', NOVIS = '#8b5cf6';
+  var series = [
+    {id: 'sav_nov', color: SAV, name: p.meta.nombre + ' vs No-VIS', points: gapData.map(function(r, i){ return {x: i, val: r.focal_vs_novis, label: r.anio, tooltip: r.focal_vs_novis != null ? '+' + r.focal_vs_novis.toFixed(1) + '%' : '—'}; })},
+    {id: 'sav_vis', color: DARK, name: p.meta.nombre + ' vs VIS', points: gapData.map(function(r, i){ return {x: i, val: r.focal_vs_vis, label: r.anio, tooltip: r.focal_vs_vis != null ? '+' + r.focal_vs_vis.toFixed(1) + '%' : '—'}; })},
+    {id: 'nov_vis', color: NOVIS, name: 'No-VIS vs VIS', points: gapData.map(function(r, i){ return {x: i, val: r.novis_vs_vis, label: r.anio, tooltip: r.novis_vs_vis != null ? '+' + r.novis_vs_vis.toFixed(1) + '%' : '—'}; })}
+  ];
+
+  var yTicks = [0, 5, 10, 15, 20, 25];
+  if(yMax > 25){ yTicks = []; for(var y = 0; y <= yMax; y += 5) yTicks.push(y); }
+
+  var svg = buildLineChart({
+    W: 1080, H: 340, margin: {l: 70, r: 20, t: 30, b: 50},
+    yMin: 0, yMax: yMax, xLabels: anios, yTicks: yTicks,
+    yFmt: function(v){ return v + '%'; },
+    series: series,
+    legend: { width: 230, items: [{color: SAV, label: p.meta.nombre + ' vs No-VIS'}, {color: DARK, label: p.meta.nombre + ' vs VIS'}, {color: NOVIS, label: 'No-VIS vs VIS'}] }
+  });
+
+  var tooltipDiv = '<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>';
+
+  host.innerHTML = svg + tooltipDiv;
+}
+
+// SEC 4 · Gráfica velocidad anual
+function renderSec4_GraficaVelocidad(p){
+  var host = document.getElementById('sec4-chart-velocidad');
+  if(!host) return;
+  var data = p.velocidad_anual || [];
+  if(data.length === 0){
+    host.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">Sin datos</div>';
+    return;
+  }
+
+  var anios = data.map(function(r){ return r.anio; });
+  var segs = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return data.some(function(r){ return r[s+'_pct'] != null; }); });
+  var colors = {focal: '#ea580c', NoVIS: '#8b5cf6', VIS: '#3b82f6', VIP: '#10b981'};
+  var names = {focal: p.meta.nombre, NoVIS: 'No-VIS zona', VIS: 'VIS zona', VIP: 'VIP zona'};
+
+  var allVals = [];
+  data.forEach(function(r){ segs.forEach(function(s){ if(r[s+'_pct'] != null) allVals.push(r[s+'_pct']); }); });
+  var yMax = Math.max(30, Math.ceil(Math.max.apply(null, allVals) / 5) * 5);
+
+  var series = segs.map(function(s){
+    return {
+      id: s, color: colors[s], name: names[s], width: s === 'focal' ? 2.5 : 2,
+      points: data.map(function(r, i){ return {x: i, val: r[s+'_pct'], label: r.anio, tooltip: r[s+'_pct'] != null ? r[s+'_pct'].toFixed(1) + '% (' + (r[s+'_unid'] || 0) + ' unid)' : '—'}; })
+    };
+  });
+
+  var yTicks = [];
+  var step = yMax > 40 ? 10 : 5;
+  for(var y = 0; y <= yMax; y += step) yTicks.push(y);
+
+  var svg = buildLineChart({
+    W: 980, H: 300, margin: {l: 60, r: 20, t: 30, b: 50},
+    yMin: 0, yMax: yMax, xLabels: anios, yTicks: yTicks,
+    yFmt: function(v){ return v + '%'; },
+    series: series,
+  });
+
+  var tooltipDiv = '<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>';
+
+  host.innerHTML = svg + tooltipDiv;
+}
+
+// SEC 4 · Gráfica rotación anual
+function renderSec4_GraficaRotacion(p){
+  var host = document.getElementById('sec4-chart-rotacion');
+  if(!host) return;
+  var data = p.rotacion_anual || [];
+  if(data.length === 0){
+    host.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">Sin datos</div>';
+    return;
+  }
+
+  var anios = data.map(function(r){ return r.anio; });
+  var segs = ['focal', 'NoVIS', 'VIS', 'VIP'].filter(function(s){ return data.some(function(r){ return r[s+'_rot'] != null; }); });
+  var colors = {focal: '#ea580c', NoVIS: '#8b5cf6', VIS: '#3b82f6', VIP: '#10b981'};
+  var names = {focal: p.meta.nombre, NoVIS: 'No-VIS zona', VIS: 'VIS zona', VIP: 'VIP zona'};
+
+  var allVals = [];
+  data.forEach(function(r){ segs.forEach(function(s){ if(r[s+'_rot'] != null) allVals.push(r[s+'_rot']); }); });
+  var yMax = Math.max(10, Math.ceil(Math.max.apply(null, allVals) / 5) * 5);
+
+  var series = segs.map(function(s){
+    return {
+      id: s, color: colors[s], name: names[s], width: s === 'focal' ? 2.5 : 2,
+      points: data.map(function(r, i){ return {x: i, val: r[s+'_rot'], label: r.anio, tooltip: r[s+'_rot'] != null ? r[s+'_rot'].toFixed(1) + ' años (' + (r[s+'_ventas'] || 0) + ' vendidas · ' + (r[s+'_disp_ini'] || '—') + ' disp inicio)' : '—'}; })
+    };
+  });
+
+  var yTicks = [];
+  var step = yMax > 40 ? 10 : 5;
+  for(var y = 0; y <= yMax; y += step) yTicks.push(y);
+
+  var svg = buildLineChart({
+    W: 980, H: 320, margin: {l: 60, r: 20, t: 30, b: 50},
+    yMin: 0, yMax: yMax, xLabels: anios, yTicks: yTicks,
+    yFmt: function(v){ return v + ' a'; },
+    series: series,
+  });
+
+  var tooltipDiv = '<div class="chart-tooltip" style="position:absolute;display:none;pointer-events:none;background:#0f172a;color:white;padding:6px 10px;border-radius:6px;font-size:12px;font-family:Inter,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:10;white-space:nowrap"></div>';
+
+  host.innerHTML = svg + tooltipDiv;
+}
+
+// Re-registrar tooltip handler cuando se regeneran los SVGs
+function reattachTooltips(){
+  document.querySelectorAll('.chart-tooltip').forEach(function(tip){
+    if(tip.__attached) return;
+    tip.__attached = true;
+    var host = tip.parentElement;
+    if(!host) return;
+    host.addEventListener('mousemove', function(e){
+      var t = e.target;
+      if(t && (t.classList.contains('pt') || t.classList.contains('hit'))){
+        var label = t.getAttribute('data-label') || '';
+        var mes = t.getAttribute('data-mes') || '';
+        var val = t.getAttribute('data-val') || '';
+        var color = t.getAttribute('data-color') || '#0f172a';
+        tip.innerHTML = '<div style="font-weight:600;color:'+color+'">'+label+'</div>' +
+                        '<div style="opacity:0.85;font-size:11px">'+mes+'</div>' +
+                        '<div style="font-size:13px;margin-top:3px;font-weight:600">'+val+'</div>';
+        var rect = host.getBoundingClientRect();
+        tip.style.left = (e.clientX - rect.left + 14) + 'px';
+        tip.style.top  = (e.clientY - rect.top - 10) + 'px';
+        tip.style.display = 'block';
+      } else {
+        tip.style.display = 'none';
+      }
+    });
+    host.addEventListener('mouseleave', function(){ tip.style.display='none'; });
+  });
+}
+
+// ---- MASTER RENDER ----
+function renderAll(id){
+  var p = window.PROYECTOS_DATA[id];
+  if(!p) return;
+  p.id = id;
+  renderHeader(p);
+  renderSec1(p);
+  renderSec5_Veredicto(p);
+  renderSec5_FMP(p);
+  renderSec5_Plata(p);
+  renderSec5_Escenarios(p);
+  renderSec3_ResumenAnual(p);
+  renderSec4_Comparativa(p);
+  renderSec4_Velocidad(p);
+  renderSec4_Rotacion(p);
+  renderSec3_GraficaMensual(p);
+  renderSec3_GraficaGap(p);
+  renderSec4_GraficaVelocidad(p);
+  renderSec4_GraficaRotacion(p);
+  setTimeout(function(){ renderMapa(p); reattachTooltips(); }, 50);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  var sel = document.getElementById('proyecto-selector');
+  if(sel){
+    sel.addEventListener('change', function(){ renderAll(sel.value); });
+    renderAll(sel.value);
+  }
+});
+</script>
+
 
 </body>
 </html>
